@@ -1,0 +1,12 @@
+.nav-wrapper {
+    padding: 0 2rem;
+    background: linear-gradient(to top left, rgb(104, 104, 236), rgb(19, 19, 172));
+}
+
+.input-login {
+    margin-top: 6rem;
+}
+
+.image {
+    height: 300px;
+}

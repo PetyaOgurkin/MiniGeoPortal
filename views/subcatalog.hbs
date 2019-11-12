@@ -1,34 +1,26 @@
 <h1>Подкаталог</h1>
 
+<a href="/catalog/{{id}}/add">Добавить карту</a>
+
 <div class="row">
+    {{#if maps.length}}
+    {{#each maps}}
     <div class="col s6">
         <div class="card">
             <div class="card-image">
-                <img class="image" src="https://cdn23.img.ria.ru/images/148393/85/1483938540_0:252:2844:1863_600x0_80_0_0_f355f2ad2e218a9d5318687557f2c0b3.jpg">
-                <span class="card-title">Card Title</span>
+                <img class="image" src="../{{img_url}}">
+                <span class="card-title">{{title}}</span>
             </div>
             <div class="card-content">
-                <p>I am a very simple card. I am good at containing small bits of information.
-                    I am convenient because I require little markup to use effectively.</p>
+                <p>{{discription}}</p>
             </div>
             <div class="card-action">
-                <a href="/catalog/p1/map">This is a link</a>
+                <a href="/catalog/{{@root.id}}/{{id}}">Открыть</a>
             </div>
         </div>
     </div>
-    <div class="col s6">
-        <div class="card">
-            <div class="card-image">
-                <img class="image" src="https://mfst.igromania.ru/wp-content/uploads/2019/02/960x540.jpg">
-                <span class="card-title">Card Title</span>
-            </div>
-            <div class="card-content">
-                <p>I am a very simple card. I am good at containing small bits of information.
-                    I am convenient because I require little markup to use effectively.</p>
-            </div>
-            <div class="card-action">
-                <a href="/catalog/p1/map">This is a link</a>
-            </div>
-        </div>
-    </div>
+    {{/each}}
+    {{else}}
+    <p>Каталог пуст</p>
+    {{/if}}
 </div>

@@ -16,8 +16,17 @@ const map = db.define('Map', {
         type: Sequelize.INTEGER,
         allowNull: false
     },
+    title: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
     publicity: {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.INTEGER,
+        allowNull: false
+    },
+    discription: Sequelize.TEXT,
+    img_url: {
+        type: Sequelize.STRING,
         allowNull: false
     }
 })

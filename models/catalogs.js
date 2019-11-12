@@ -12,9 +12,14 @@ const catalog = db.define('Catalog', {
         type: Sequelize.STRING,
         allowNull: false
     },
-    items: {
-        type: Sequelize.ARRAY,
-        
+    publicity: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+    },
+    discription: Sequelize.TEXT,
+    img_url: {
+        type: Sequelize.STRING,
+        allowNull: false
     }
 })
 

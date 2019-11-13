@@ -1,18 +1,35 @@
 const { Router } = require('express');
+const Sequelize = require('sequelize');
 const Catalog = require('../models/catalogs');
 const Maps = require('../models/map');
 const router = Router();
+const Op = Sequelize.Op;
 
 router.get('/', async (req, res) => {
 
     try {
-        const catalog = await Catalog.findAll({ raw: true });
+        let catalog;
+        let permission;
+
+        if (req.session.isAuthenticated) {
+            permission = +req.session.user.permission_level;
+            const user_lvl = +req.session.user.permission_level + 1;
+            catalog = await Catalog.findAll({ where: { publicity: { [Op.lte]: user_lvl } }, raw: true });
+        }
+        else {
+            permission = 0;
+            catalog = await Catalog.findAll({ where: { publicity: 1 }, raw: true });
+        }
+
 
         res.render('catalog', {
             title: 'Каталог',
             isCatalog: true,
-            catalog
+            user_lvl: permission,
+            catalog,
+
         })
+
     } catch (error) {
         console.error(error);
     }
@@ -26,12 +43,22 @@ router.get('/:subcatalog', async (req, res) => {
         })
     }
     else {
-        const maps = await Maps.findAll({ raw: true });
+
+        const catalog = await Catalog.findByPk(req.params.subcatalog, { raw: true });
+        let maps;
+
+        if (req.session.isAuthenticated) {
+            const user_lvl = +req.session.user.permission_level + 1;
+            maps = await Maps.findAll({ where: { parent_catalog: req.params.subcatalog, publicity: { [Op.lte]: user_lvl } }, raw: true });
+        }
+        else {
+            maps = await Maps.findAll({ where: { parent_catalog: req.params.subcatalog, publicity: 1 }, raw: true });
+        }
 
         res.render('subcatalog', {
-            title: 'Подкаталог',
-            id: req.params.subcatalog,
-            maps
+            title: catalog.title,
+            maps,
+            catalog
         })
     }
 })

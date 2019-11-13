@@ -1,6 +1,6 @@
-<h1>Подкаталог</h1>
+<h1>{{catalog.title}}</h1>
 
-<a href="/catalog/{{id}}/add">Добавить карту</a>
+<a href="/catalog/{{catalog.id}}/add">Добавить карту</a>
 
 <div class="row">
     {{#if maps.length}}
@@ -15,7 +15,7 @@
                 <p>{{discription}}</p>
             </div>
             <div class="card-action">
-                <a href="/catalog/{{@root.id}}/{{id}}">Открыть</a>
+                <a href="/catalog/{{@root.catalog.id}}/{{id}}">Открыть</a>
             </div>
         </div>
     </div>

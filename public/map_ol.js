@@ -59,13 +59,13 @@ map.on('singleclick', function (evt) {
                 { 'INFO_FORMAT': 'text/html' });
 
             if (url) {
-                console.log(url);
+              //  console.log(url);
 
-                /* fetch(url)
+                fetch(url)
                     .then(function (response) { return response.text(); })
                     .then(function (html) {
                         document.getElementById('info').innerHTML = html;
-                    }); */
+                    });
             }
         }
     });

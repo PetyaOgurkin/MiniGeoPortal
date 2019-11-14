@@ -30,6 +30,7 @@ app.set('views', 'views');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 app.use(expressSession({
     secret: 'secret string',
     store: sequelizeSessionStore,

@@ -1,4 +1,4 @@
-<nav>
+{{!-- <nav>
     <div class="nav-wrapper">
         <a href="/" class="brand-logo">Какое то название или логотип</a>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
@@ -43,3 +43,65 @@
 </ul>
 
 {{/if}}
+ --}}
+
+
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Название</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+        aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav ml-auto">
+
+            {{#if isCatalog}}
+            <li class="nav-item active"><a class="nav-link" href="/catalog">Каталог</a></li>
+            {{else}}
+            <li class="nav-item"><a class="nav-link" href="/catalog">Каталог</a></li>
+            {{/if}}
+
+            {{#if isAuth}}
+
+            {{#if isAdministration}}
+            <li class="nav-item dropdown active">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{user_name}}
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                    {{#ifAdmin user_lvl}}
+                    <a class="dropdown-item" href="/administration">Администрирование</a>
+                    {{/ifAdmin}}
+                    <a class="dropdown-item" href="/login/logout">Выйти</a>
+                </div>
+            </li>
+            {{else}}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{user_name}}
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                    {{#ifAdmin user_lvl}}
+                    <a class="dropdown-item" href="/administration">Администрирование</a>
+                    {{/ifAdmin}}
+                    <a class="dropdown-item" href="/login/logout">Выйти</a>
+                </div>
+            </li>
+            {{/if}}
+
+            {{else}}
+
+            {{#if isLogin}}
+            <li class="nav-item active"><a class="nav-link" href="/login">Войти</a></li>
+            {{else}}
+            <li class="nav-item"><a class="nav-link" href="/login">Войти</a></li>
+            {{/if}}
+
+            {{/if}}
+
+        </ul>
+    </div>
+</nav>

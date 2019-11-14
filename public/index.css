@@ -7,12 +7,20 @@
     margin-top: 6rem;
 }
 
-.image {
+/* .card-img-top {
     height: 300px;
+} */
+
+.card {
+    max-width: 300px;
 }
 
 .input-addcatalog {
     margin-top: 2rem;
+}
+
+.modal {
+    width: 30%;
 }
 
 

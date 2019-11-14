@@ -18,7 +18,6 @@ router.get('/', async (req, res) => {
             catalog = await Catalog.findAll({ where: { publicity: 1 }, raw: true });
         }
 
-
         res.render('catalog', {
             title: 'Каталог',
             isCatalog: true,
@@ -34,7 +33,7 @@ router.get('/', async (req, res) => {
 router.get('/:subcatalog', async (req, res) => {
     if (req.params.subcatalog === "add") {
         res.render('add_catalog', {
-            title: 'Добавить каталог'
+            title: 'Добавить каталог',
         })
     }
     else {
@@ -52,6 +51,7 @@ router.get('/:subcatalog', async (req, res) => {
 
         res.render('subcatalog', {
             title: catalog.title,
+            isCatalog: true,
             maps,
             catalog
         })

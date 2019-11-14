@@ -1,4 +1,4 @@
-<h1>Profile</h1>
+{{!-- <h1>Profile</h1>
 
 <div class="row">
     <div class="col s12">
@@ -11,20 +11,85 @@
                 </tr>
             </thead>
 
-            <tbody>
+            <tbody id="usersTable">
                 {{#each users}}
                 <tr>
-                    <td>{{name}}</td>
-                    <td>{{permission_level}}</td>
-                    <td><button class="btn btn-small" data-id="{{id}}">Редактировать</button></td>
+                    <td id="name-{{id}}">{{name}}</td>
+                    <td id="permission-{{id}}">{{permission_level}}</td>
+                    <td><a class="btn btn-small modal-trigger" href="#edit_user" id="edit-{{id}}">Редактировать</a>
+                    </td>
                 </tr>
                 {{/each}}
-                <tr>
+                <tr id="addUserTR">
                     <td></td>
                     <td></td>
-                    <td><button class="btn btn-small">Добавить</button></td>
+                    <td><a class="btn btn-small modal-trigger" href="#add_user">Добавить</a></td>
                 </tr>
             </tbody>
         </table>
     </div>
 </div>
+
+<div id="add_user" class="modal">
+    <div class="modal-content">
+        <div class="input-field">
+            <input id="login" name="login" type="text" class="validate">
+            <label for="login">Логин</label>
+        </div>
+
+        <div class="input-field">
+            <input id="password" name="password" type="password" class="validate">
+            <label for="password">Пароль</label>
+        </div>
+
+        <div class="input-field input-addcatalog">
+            <select id="permission" name="permission" class="validate">
+                <option value="1">Пользователь</option>
+                <option value="2">Модератор</option>
+            </select>
+            <label>Права</label>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="modal-close btn btn-small" id="addUserDB">Добавить</button>
+    </div>
+</div>
+
+
+<div id="edit_user" class="modal">
+    <div class="modal-content">
+        <div class="input-field">
+            <input id="edit_login" name="edit_login" type="text" class="validate">
+            <label id="edit_login_label" for="edit_login">Логин</label>
+        </div>
+
+        <div class="row">
+            <div class="input-field col s8">
+                <input id="edit_password" name="edit_password" type="password" class="validate" disabled>
+                <label for="edit_password">Пароль</label>
+            </div>
+            <div class="input-field col s4">
+                <label>
+                    <input type="checkbox" class="filled-in" />
+                    <span>Сменить пароль</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="input-field input-addcatalog">
+            <select id="edit_permission" name="edit_permission" class="validate">
+                <option value="1">Пользователь</option>
+                <option value="2">Модератор</option>
+            </select>
+            <label>Права</label>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="modal-close btn btn-small" id="DeleteUserDB">Удалить</button>
+        <button class="modal-close btn btn-small" id="EditUserDB">Готово</button>
+    </div>
+</div> --}}
+
+
+
+<h1>Hey</h1>

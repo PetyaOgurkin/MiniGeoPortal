@@ -1,37 +1,29 @@
 <h1>Новый каталог</h1>
 
-
-<form action="/catalog/add" method="POST" enctype="multipart/form-data" novalidate>
-    <div class="input-field input-addcatalog">
-        <input id="title" name="title" type="text" class="validate" required>
+<form action="/catalog/add" method="POST" enctype="multipart/form-data">
+    <div class="form-group">
         <label for="title">Название каталога</label>
-        <span class="helper-text" data-error="Введите название каталога"></span>
+        <input type="text" class="form-control" id="title" name="title" placeholder="Введите название каталога">
     </div>
 
-    <div class="input-field input-addcatalog">
-        <input id="discription" name="discription" type="text" class="validate" required>
+    <div class="form-group">
         <label for="discription">Описание</label>
-        <span class="helper-text" data-error="Введите описание"></span>
+        <input type="text" class="form-control" id="discription" name="discription" placeholder="Введите описание">
     </div>
 
-    <div class="file-field input-field input-addcatalog">
-        <div class="btn">
-            <span>Изображение</span>
-            <input type="file" name="img">
-        </div>
-        <div class="file-path-wrapper">
-            <input class="file-path validate" type="text">
-        </div>
+    <div class="form-group">
+        <label for="img">Изображение</label>
+        <input type="file" class="form-control-file" id="img" name="img" placeholder="Добавьте изображение для превью">
     </div>
 
-    <div class="input-field input-addcatalog">
-        <select name="publicity" class="validate">
+    <div class="form-group">
+        <label for="publicity">Видимость каталога</label>
+        <select class="form-control" id="publicity" name="publicity">
             <option value="3">Только модераторы</option>
             <option value="2">Модераторы и пользователи</option>
             <option value="1">Все</option>
         </select>
-        <label>Видимость каталога</label>
     </div>
 
-    <button class="btn btn-primary input-addcatalog" type="submit">Создать каталог</button>
+    <button type="submit" class="btn btn-primary">Создать каталог</button>
 </form>

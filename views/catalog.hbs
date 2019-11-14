@@ -2,10 +2,10 @@
 
 
 {{#ifEditLvl user_lvl}}
-<a href="/catalog/add">Добавить каталог</a>
+<p class="add_link"><a href="/catalog/add">Добавить каталог</a></p>
 {{/ifEditLvl}}
 
-<div class="card-deck">
+<div class="card-columns">
     {{#if catalog.length}}
     {{#each catalog}}
 
@@ -14,7 +14,15 @@
         <div class="card-body">
             <h5 class="card-title">{{title}}</h5>
             <p class="card-text">{{discription}}</p>
-            <p class="card-text"><small class="text-muted"><a href="/catalog/{{id}}">Открыть</a></small></p>
+        </div>
+        <div class="card-footer bg-transparent">
+            <p class="card-text"><small class="text-muted"><a style="margin-right: 2rem;"
+                        href="/catalog/{{id}}">Открыть</a>
+
+                    {{#ifEditLvl @root.user_lvl}}
+                    <a href="/catalog/{{id}}/edit?allow=true">Редактировать</a>
+                    {{/ifEditLvl}}
+                </small></p>
         </div>
     </div>
 

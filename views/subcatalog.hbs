@@ -1,10 +1,10 @@
 <h1>{{catalog.title}}</h1>
 
 {{#ifEditLvl user_lvl}}
-<a href="/catalog/{{catalog.id}}/add">Добавить карту</a>
+<p class="add_link"><a href="/catalog/{{catalog.id}}/add">Добавить карту</a></p>
 {{/ifEditLvl}}
 
-<div class="card-deck">
+<div class="card-columns">
     {{#if maps.length}}
     {{#each maps}}
 
@@ -13,8 +13,17 @@
         <div class="card-body">
             <h5 class="card-title">{{title}}</h5>
             <p class="card-text">{{discription}}</p>
-            <p class="card-text"><small class="text-muted"><a
-                        href="/catalog/{{@root.catalog.id}}/{{id}}">Открыть</a></small></p>
+
+
+        </div>
+        <div class="card-footer bg-transparent ">
+            <p class="card-text"><small class="text-muted"><a style="margin-right: 2rem;"
+                        href="/catalog/{{@root.catalog.id}}/{{id}}">Открыть</a>
+
+                    {{#ifEditLvl @root.user_lvl}}
+                    <a href="/catalog/{{@root.catalog.id}}/{{id}}">Редактировать</a>
+                    {{/ifEditLvl}}
+                </small></p>
         </div>
     </div>
 

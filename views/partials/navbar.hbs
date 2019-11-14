@@ -1,54 +1,5 @@
-{{!-- <nav>
-    <div class="nav-wrapper">
-        <a href="/" class="brand-logo">Какое то название или логотип</a>
-        <ul id="nav-mobile" class="right hide-on-med-and-down">
-
-            {{#if isCatalog}}
-            <li class="active"><a href="/catalog">Каталог</a></li>
-            {{else}}
-            <li><a href="/catalog">Каталог</a></li>
-            {{/if}}
-
-            {{#if isAuth}}
-
-            {{#if isAdministration}}
-            <li class="active"><a class="dropdown-trigger" href="#" data-target="dropdown1">{{user_name}}<i
-                        class="material-icons right">arrow_drop_down</i></a></li>
-            {{else}}
-            <li><a class="dropdown-trigger" href="#" data-target="dropdown1">{{user_name}}<i
-                        class="material-icons right">arrow_drop_down</i></a></li>
-            {{/if}}
-
-            {{else}}
-
-            {{#if isLogin}}
-            <li class="active"><a href="/login">Войти</a></li>
-            {{else}}
-            <li><a href="/login">Войти</a></li>
-            {{/if}}
-
-            {{/if}}
-
-        </ul>
-    </div>
-</nav>
-
-{{#if isAuth}}
-
-<ul id="dropdown1" class="dropdown-content">
-    {{#ifAdmin user_lvl}}
-    <li><a href="/administration">Администрирование</a></li>
-    {{/ifAdmin}}
-    <li><a href="/login/logout">Выйти</a></li>
-</ul>
-
-{{/if}}
- --}}
-
-
-
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">Название</a>
+    <a class="navbar-brand" href="/">Название</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
         aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>

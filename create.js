@@ -1,13 +1,13 @@
 const User = require('./models/users');
 const bcrypt = require('bcryptjs');
 
-async function create() {
+async function create(name, pass, perm) {
     try {
-        const hashPassword = await bcrypt.hash("mod", 10);
+        const hashPassword = await bcrypt.hash(pass, 10);
         await User.create({
-            name: "mod",
+            name,
             password: hashPassword,
-            permission_level: 2
+            permission_level: perm
         });
 
     } catch (error) {
@@ -15,6 +15,10 @@ async function create() {
     }
 }
 
-create();
+create("admin", "admin", 3);
+create("mod", "mod", 2);
+create("user", "user", 1);
+console.log("done");
+
 
 

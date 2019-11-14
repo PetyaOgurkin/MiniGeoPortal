@@ -7,7 +7,7 @@ const db = require('./utils/database');
 const homeRoutes = require('./routes/home');
 const catalogRoutes = require('./routes/catalog');
 const loginRoutes = require('./routes/login');
-const profileRoutes = require('./routes/profile');
+const administartionRoutes = require('./routes/administration');
 const fileMiddleware = require('./middleware/file');
 const varMiddleaware = require('./middleware/variables');
 
@@ -44,7 +44,7 @@ app.use(varMiddleaware);
 app.use('/', homeRoutes);
 app.use('/catalog', catalogRoutes);
 app.use('/login', loginRoutes);
-app.use('/profile', profileRoutes);
+app.use('/administration', administartionRoutes);
 
 
 const PORT = process.env.PORT || 3000;

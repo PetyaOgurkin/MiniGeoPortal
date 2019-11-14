@@ -1,0 +1,30 @@
+<h1>Profile</h1>
+
+<div class="row">
+    <div class="col s12">
+        <table class="striped">
+            <thead>
+                <tr>
+                    <th>Имя</th>
+                    <th>Права</th>
+                    <th>Действие</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {{#each users}}
+                <tr>
+                    <td>{{name}}</td>
+                    <td>{{permission_level}}</td>
+                    <td><button class="btn btn-small" data-id="{{id}}">Редактировать</button></td>
+                </tr>
+                {{/each}}
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td><button class="btn btn-small">Добавить</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

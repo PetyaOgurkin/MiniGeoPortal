@@ -9,15 +9,12 @@ router.get('/', async (req, res) => {
 
     try {
         let catalog;
-        let permission;
 
         if (req.session.isAuthenticated) {
-            permission = +req.session.user.permission_level;
             const user_lvl = +req.session.user.permission_level + 1;
             catalog = await Catalog.findAll({ where: { publicity: { [Op.lte]: user_lvl } }, raw: true });
         }
         else {
-            permission = 0;
             catalog = await Catalog.findAll({ where: { publicity: 1 }, raw: true });
         }
 
@@ -25,9 +22,7 @@ router.get('/', async (req, res) => {
         res.render('catalog', {
             title: 'Каталог',
             isCatalog: true,
-            user_lvl: permission,
-            catalog,
-
+            catalog
         })
 
     } catch (error) {

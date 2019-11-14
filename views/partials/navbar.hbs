@@ -11,10 +11,12 @@
 
             {{#if isAuth}}
 
-            {{#if isProfile}}
-            <li class="active"><a href="/profile">Профиль</a></li>
+            {{#if isAdministration}}
+            <li class="active"><a class="dropdown-trigger" href="#" data-target="dropdown1">{{user_name}}<i
+                        class="material-icons right">arrow_drop_down</i></a></li>
             {{else}}
-            <li><a href="/profile">Профиль</a></li>
+            <li><a class="dropdown-trigger" href="#" data-target="dropdown1">{{user_name}}<i
+                        class="material-icons right">arrow_drop_down</i></a></li>
             {{/if}}
 
             {{else}}
@@ -30,3 +32,14 @@
         </ul>
     </div>
 </nav>
+
+{{#if isAuth}}
+
+<ul id="dropdown1" class="dropdown-content">
+    {{#ifAdmin user_lvl}}
+    <li><a href="/administration">Администрирование</a></li>
+    {{/ifAdmin}}
+    <li><a href="/login/logout">Выйти</a></li>
+</ul>
+
+{{/if}}

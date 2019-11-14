@@ -17,7 +17,7 @@ const catalog = db.define('Users', {
         allowNull: false
     },
     permission_level: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         allowNull: false
     }
 })

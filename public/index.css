@@ -2,6 +2,10 @@ body {
     background-color: whitesmoke;
 }
 
+.bg-water {
+    background-color: #1f5d9c!important;
+}
+
 .container {
     padding: 2rem 0;
 }
@@ -12,6 +16,7 @@ body {
 
 .card {
     max-width: 350px;
+    margin-bottom: 2rem;
 }
 
 .card-body {
@@ -39,6 +44,10 @@ body {
 
 .form-check {
     margin-bottom: 1rem;
+}
+
+.form-edit {
+    margin-top: 2rem;
 }
 
 .card-body::-webkit-scrollbar {

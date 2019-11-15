@@ -36,29 +36,6 @@ router.get('/add', (req, res) => {
     })
 })
 
-router.post('/remove', async (req, res) => {
-    try {
-        const catalog = await Catalog.findByPk(+req.body.id);
-
-        if (catalog) {
-            await catalog.destroy();
-
-            const maps = await Maps.findAll({ where: { parent_catalog: req.body.id } });
-            if (maps) {
-                maps.forEach(async map => await map.destroy());
-            }
-            res.status(204).redirect('/catalog');
-        }
-        else {
-            res.redirect('/catalog');
-        }
-
-    } catch (error) {
-        console.error(error);
-    }
-})
-
-
 router.get('/:subcatalog', async (req, res) => {
 
     try {
@@ -67,10 +44,10 @@ router.get('/:subcatalog', async (req, res) => {
 
         if (req.session.isAuthenticated) {
             const user_lvl = +req.session.user.permission_level + 1;
-            maps = await Maps.findAll({ where: { parent_catalog: req.params.subcatalog, publicity: { [Op.lte]: user_lvl } }, raw: true });
+            maps = await Maps.findAll({ where: { parent_catalog: req.params.subcatalog, publicity: { [Op.lte]: user_lvl } }, order: ['id'], raw: true });
         }
         else {
-            maps = await Maps.findAll({ where: { parent_catalog: req.params.subcatalog, publicity: 1 }, raw: true });
+            maps = await Maps.findAll({ where: { parent_catalog: req.params.subcatalog, publicity: 1 }, order: ['id'], raw: true });
         }
 
         res.render('subcatalog', {
@@ -84,8 +61,6 @@ router.get('/:subcatalog', async (req, res) => {
     }
 })
 
-
-// редактирование каталога
 router.get('/:subcatalog/edit', async (req, res) => {
 
     if (!req.query.allow) {
@@ -127,22 +102,55 @@ router.get('/:subcatalog/add', async (req, res) => {
     }
 })
 
-
-
-router.get('/:subcatalog/:map', async (req, res) => {
+router.get('/:subcatalog/:map/edit', async (req, res) => {
+    if (!req.query.allow) {
+        return res.redirect('/catalog/' + req.params.subcatalog);
+    }
     try {
 
-        res.render('map', {
-            title: 'Карта',
-            isMap: true
-        })
+        const map = await Maps.findByPk(+req.params.map, { raw: true });
+
+        if (map) {
+            res.render('edit_map', {
+                title: 'Редактирование карты',
+                map
+            })
+        }
+        else {
+            res.redirect('/catalog/' + req.params.subcatalog);
+        }
+
 
     } catch (error) {
         console.error(error);
     }
 })
 
+router.get('/:subcatalog/:map', async (req, res) => {
+    try {
+        if (Number.isInteger(+req.params.map)) {
+            const map = await Maps.findByPk(+req.params.map, { raw: true });
+            if (map) {
+                res.render('map', {
+                    title: 'Карта',
+                    isMap: true,
+                    map
+                })
+            }
+            else {
+                res.redirect('/catalog/' + req.params.subcatalog);
+            }
+        }
+        else {
+            res.redirect('/catalog/' + req.params.subcatalog);
+        }
 
+
+
+    } catch (error) {
+        console.error(error);
+    }
+})
 
 router.post('/add', async (req, res) => {
     try {
@@ -194,6 +202,77 @@ router.post('/edit', async (req, res) => {
 
 })
 
+router.post('/remove', async (req, res) => {
+    try {
+        const catalog = await Catalog.findByPk(+req.body.id);
+
+        if (catalog) {
+            await catalog.destroy();
+
+            const maps = await Maps.findAll({ where: { parent_catalog: req.body.id } });
+            if (maps) {
+                maps.forEach(async map => await map.destroy());
+            }
+            res.status(204).redirect('/catalog');
+        }
+        else {
+            res.redirect('/catalog');
+        }
+
+    } catch (error) {
+        console.error(error);
+    }
+})
+
+router.post('/:subcatalog/edit', async (req, res) => {
+    try {
+        const { title, discription, publicity, url, id } = req.body;
+
+        const map = await Maps.findByPk(+id);
+
+        if (map) {
+            let img_url;
+            if (req.file) {
+                img_url = req.file.path;
+            }
+            else {
+                img_url = map.img_url;
+            }
+
+            map.title = title;
+            map.discription = discription;
+            map.publicity = publicity;
+            map.url = url;
+            map.img_url = img_url;
+
+            await map.save();
+            res.status(200).redirect('/catalog/' + req.params.subcatalog);
+        }
+        else {
+            res.redirect('/catalog/' + req.params.subcatalog);
+        }
+
+    } catch (error) {
+        console.error(error);
+    }
+})
+
+router.post('/:subcatalog/remove', async (req, res) => {
+    try {
+        const map = await Maps.findByPk(+req.body.id);
+
+        if (map) {
+            await map.destroy();
+            res.status(204).redirect('/catalog/' + req.params.subcatalog);
+        }
+        else {
+            res.redirect('/catalog/' + req.params.subcatalog);
+        }
+
+    } catch (error) {
+        console.error(error);
+    }
+})
 
 router.post('/:subcatalog/add', async (req, res) => {
     try {
@@ -213,6 +292,5 @@ router.post('/:subcatalog/add', async (req, res) => {
         console.error(error);
     }
 })
-
 
 module.exports = router;

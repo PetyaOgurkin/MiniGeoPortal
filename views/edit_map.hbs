@@ -1,0 +1,50 @@
+<h1>Редактирование карты: {{map.title}}</h1>
+
+
+<form action="/catalog/{{map.parent_catalog}}/edit" method="POST" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="title">Название карты</label>
+        <input type="text" class="form-control" id="title" name="title" placeholder="Введите название карты"
+            value={{map.title}}>
+    </div>
+
+    <div class="form-group">
+        <label for="discription">Описание</label>
+        <input type="text" class="form-control" id="discription" name="discription" placeholder="Введите описание"
+            value={{map.discription}}>
+    </div>
+
+    <div class="form-group">
+        <label for="url">WMS URL карты</label>
+        <input type="text" class="form-control" id="url" name="url" placeholder="Введите WMS адрес карты"
+            value={{map.url}}>
+    </div>
+
+    <div class="form-group">
+        <label for="img">Изображение</label>
+        <input type="file" class="form-control-file" id="img" name="img" placeholder="Добавьте изображение для превью">
+    </div>
+
+    <div class="form-group">
+        <label for="publicity">Видимость карты</label>
+        <select class="form-control" id="publicity" name="publicity">
+            {{#select map.publicity}}
+            <option value="3">Только модераторы</option>
+            <option value="2">Модераторы и пользователи</option>
+            <option value="1">Все</option>
+            {{/select}}
+        </select>
+    </div>
+
+    <input type="hidden" name="id" value="{{map.id}}">
+
+    <button type="submit" class="btn btn-primary">Готово</button>
+
+
+</form>
+
+<form action="/catalog/{{map.parent_catalog}}/remove" method="POST" class="form-edit">
+    <input type="hidden" name="id" value="{{map.id}}">
+
+    <button class="btn btn-danger">Удалить карту</button>
+</form>

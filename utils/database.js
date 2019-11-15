@@ -1,12 +1,12 @@
 const Sequelize = require('sequelize');
 
-const DB_NAME = 'client';
-const USER_NAME = 'postgres';
-const PASSWORD = '12345';
+const DB_NAME = 'client_db';
+const USER_NAME = 'client';
+const PASSWORD = 'client';
 
 
 const sequelize = new Sequelize(DB_NAME, USER_NAME, PASSWORD, {
-    host: 'localhost',
+    host: '172.16.132.45',
     dialect: 'postgres',
     logging: false
 });

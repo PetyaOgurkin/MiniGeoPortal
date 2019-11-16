@@ -14,12 +14,11 @@ body {
     padding: 1rem 0;
 }
 
-.card {
-    max-width: 350px;
+.catalog-card {
     margin-bottom: 2rem;
 }
 
-.card-body {
+.catalog-card-body {
     height: 200px;
     overflow: auto;
 }
@@ -27,6 +26,11 @@ body {
 .card-img-top {
     height: 200px;
     object-fit: cover;
+}
+
+.card-img {
+    object-fit: cover;
+    height: 250px;
 }
 
 .form-input {

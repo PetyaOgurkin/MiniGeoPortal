@@ -9,21 +9,23 @@
 {{#if catalog.length}}
 <div class="row">
     {{#each catalog}}
-    <div class="col-sm-4">
+    <div class="col-sm-4 catalog-card">
         <div class="card">
-            <img class="card-img-top" src="{{img_url}}" href="/catalog/{{id}}">
-            <div class="card-body">
+            <a href="/catalog/{{id}}"><img class="card-img-top" src="{{img_url}}" href="/catalog/{{id}}"></a>
+            <div class="card-body catalog-card-body">
                 <h5 class="card-title">{{title}}</h5>
                 <p class="card-text">{{discription}}</p>
             </div>
             <div class="card-footer bg-transparent">
-                <p class="card-text"><small class="text-muted"><a style="margin-right: 2rem;"
-                            href="/catalog/{{id}}">Открыть</a>
+                <p class="card-text">
 
-                        {{#ifEditLvl @root.user_lvl}}
-                        <a href="/catalog/{{id}}/edit?allow=true">Редактировать</a>
-                        {{/ifEditLvl}}
-                    </small></p>
+                    <a class="btn btn-link btn-sm" style="margin-right: 2rem;" href="/catalog/{{id}}">Открыть</a>
+
+                    {{#ifEditLvl @root.user_lvl}}
+                    <a class="btn btn-link btn-sm" href="/catalog/{{id}}/edit?allow=true">Редактировать</a>
+                    {{/ifEditLvl}}
+
+                </p>
             </div>
         </div>
     </div>

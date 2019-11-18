@@ -63,6 +63,14 @@ body {
     background-color: gray;
 }
 
+.submit-btns {
+    padding-top: 2rem;
+}
+
+.submit-btns>button {
+    margin-right: 2rem;
+}
+
 @media (max-width: 575px) {
     .container {
         padding: 2rem 3rem;

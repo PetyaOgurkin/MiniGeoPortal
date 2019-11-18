@@ -1,7 +1,7 @@
 <h1>Редактирование карты: {{map.title}}</h1>
 
 
-<form action="/catalog/{{map.parent_catalog}}/edit" method="POST" enctype="multipart/form-data">
+<form action="/catalog/{{map.parent_catalog}}/edit" method="POST" enctype="multipart/form-data" id="edit">
     <div class="form-group">
         <label for="title">Название карты</label>
         <input type="text" class="form-control" id="title" name="title" placeholder="Введите название карты"
@@ -36,15 +36,25 @@
         </select>
     </div>
 
+    <div class="form-group">
+        <label for="parent_catalog">Каталог</label>
+        <select class="form-control" id="parent_catalog" name="parent_catalog">
+            {{#select map.parent_catalog}}
+            {{#each catalogs}}
+            <option value="{{id}}">{{title}}</option>
+            {{/each}}
+            {{/select}}
+        </select>
+    </div>
+
     <input type="hidden" name="id" value="{{map.id}}">
-
-    <button type="submit" class="btn btn-primary">Готово</button>
-
-
 </form>
 
-<form action="/catalog/{{map.parent_catalog}}/remove" method="POST" class="form-edit">
+<form action="/catalog/{{map.parent_catalog}}/remove" method="POST" id="delete">
     <input type="hidden" name="id" value="{{map.id}}">
-
-    <button class="btn btn-danger">Удалить карту</button>
 </form>
+
+<div class="submit-btns">
+    <button type="submit" form="edit" class="btn btn-primary">Готово</button>
+    <button type="submit" form="delete" class="btn btn-danger">Удалить карту</button>
+</div>

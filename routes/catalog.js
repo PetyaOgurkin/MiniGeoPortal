@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const Sequelize = require('sequelize');
+const fs = require('fs');
 const Catalog = require('../models/catalogs');
 const Maps = require('../models/map');
 const router = Router();
@@ -111,15 +112,18 @@ router.get('/:subcatalog/:map/edit', async (req, res) => {
         const map = await Maps.findByPk(+req.params.map, { raw: true });
 
         if (map) {
-            res.render('edit_map', {
-                title: 'Редактирование карты',
-                map
-            })
+            const catalogs = await Catalog.findAll({ attributes: ['id', 'title'], raw: true });
+            if (catalogs) {
+                res.render('edit_map', {
+                    title: 'Редактирование карты',
+                    map,
+                    catalogs
+                })
+            }
         }
         else {
             res.redirect('/catalog/' + req.params.subcatalog);
         }
-
 
     } catch (error) {
         console.error(error);
@@ -176,18 +180,16 @@ router.post('/edit', async (req, res) => {
         const catalog = await Catalog.findByPk(+id);
 
         if (catalog) {
-            let img_url;
             if (req.file) {
-                img_url = req.file.path;
-            }
-            else {
-                img_url = catalog.img_url;
+                fs.unlink('./' + catalog.img_url, (err) => {
+                    if (err) throw err;
+                });
+                catalog.img_url = req.file.path;
             }
 
             catalog.title = title;
             catalog.discription = discription;
             catalog.publicity = publicity;
-            catalog.img_url = img_url;
 
             await catalog.save();
             res.status(200).redirect('/catalog');
@@ -207,11 +209,20 @@ router.post('/remove', async (req, res) => {
         const catalog = await Catalog.findByPk(+req.body.id);
 
         if (catalog) {
+            fs.unlink('./' + catalog.img_url, (err) => {
+                if (err) throw err;
+            });
+
             await catalog.destroy();
 
             const maps = await Maps.findAll({ where: { parent_catalog: req.body.id } });
             if (maps) {
-                maps.forEach(async map => await map.destroy());
+                maps.forEach(async map => {
+                    fs.unlink('./' + map.img_url, (err) => {
+                        if (err) throw err;
+                    });
+                    await map.destroy()
+                });
             }
             res.status(204).redirect('/catalog');
         }
@@ -226,24 +237,23 @@ router.post('/remove', async (req, res) => {
 
 router.post('/:subcatalog/edit', async (req, res) => {
     try {
-        const { title, discription, publicity, url, id } = req.body;
+        const { title, discription, publicity, url, id, parent_catalog } = req.body;
 
         const map = await Maps.findByPk(+id);
 
         if (map) {
-            let img_url;
             if (req.file) {
-                img_url = req.file.path;
-            }
-            else {
-                img_url = map.img_url;
+                fs.unlink('./' + map.img_url, (err) => {
+                    if (err) throw err;
+                });
+                map.img_url = req.file.path;
             }
 
             map.title = title;
             map.discription = discription;
             map.publicity = publicity;
             map.url = url;
-            map.img_url = img_url;
+            map.parent_catalog = parent_catalog;
 
             await map.save();
             res.status(200).redirect('/catalog/' + req.params.subcatalog);
@@ -262,6 +272,9 @@ router.post('/:subcatalog/remove', async (req, res) => {
         const map = await Maps.findByPk(+req.body.id);
 
         if (map) {
+            fs.unlink('./' + map.img_url, (err) => {
+                if (err) throw err;
+            });
             await map.destroy();
             res.status(204).redirect('/catalog/' + req.params.subcatalog);
         }

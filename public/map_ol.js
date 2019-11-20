@@ -5,19 +5,16 @@ async function getLayers() {
     const capabilities = WMS_URL + "SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities";
     const result = parser.read(await fetch(capabilities).then(res => res.text()));
 
-
-    const wmsSource = new ol.source.ImageWMS({
-        url: WMS_URL,
-        params: { 'LAYERS': result.Capability.Layer.Layer.map(layer => layer.Name).reverse().join(',') },
-        transition: 0
-    });
-    var graphicUrl = wmsSource.getLegendUrl(map.getView().getResolution());
-    console.log(graphicUrl);
-    document.querySelector('#legend').src = graphicUrl;
-
-
-    return result.Capability.Layer.Layer.map(layer => layer.Name).reverse();
+    return {
+        layersName: result.Capability.Layer.Layer.map(layer => layer.Name).reverse(),
+        layersTitle: result.Capability.Layer.Layer.map(layer => layer.Title).reverse(),
+    }
 }
+
+function getLegend(layers) {
+    layers.forEach(layer)
+}
+
 
 const layersGroup = layers => {
     return layers.map(layer => {
@@ -39,7 +36,7 @@ async function init() {
 
     const layers = await getLayers();
     map.addLayer(new ol.layer.Group({
-        layers: layersGroup(layers)
+        layers: layersGroup(layers.layersName)
     }))
     return layers;
 }
@@ -60,14 +57,33 @@ const map = new ol.Map({
 init().then((layers) => {
     const check = document.querySelector("#check");
     check.innerHTML = "";
-    layers.forEach(layer => {
+    layers.layersName.forEach((layer, idx) => {
+
+        const wmsSource = new ol.source.ImageWMS({
+            url: WMS_URL,
+            params: {
+                'LAYERS': layer
+            },
+            transition: 0
+        });
+
+        const legendSrc = wmsSource.getLegendUrl(map.getView().getResolution(), {
+            'SYMBOLSPACE': 1,
+            'ICONLABELSPACE': 1,
+            'LAYERSPACE': 1,
+            'LAYERFONTBOLD': false,
+            'LAYERTITLE': false,
+            'TRANSPARENT': true
+        });
+
         check.innerHTML += `
-        <div>
-          <label>
-            <input type="checkbox" id="${layer}" class="filled-in" checked="checked" />
-            <span>${layer}</span>
-          </label>
-          </div>`
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="${layer}" checked="checked">
+                <label class="form-check-label" for="${layer}">${layers.layersTitle[idx]}</label>
+                <div class="legendIcon">
+                    <img src='${legendSrc}'>
+                </div>
+            </div>`
     })
 
     check.querySelectorAll("input[type=checkbox]").forEach(node => {

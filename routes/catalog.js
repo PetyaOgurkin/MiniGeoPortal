@@ -136,6 +136,7 @@ router.get('/:subcatalog/:map', async (req, res) => {
             const map = await Maps.findByPk(+req.params.map, { raw: true });
             if (map) {
                 res.render('map', {
+                    layout: 'map',
                     title: 'Карта',
                     isMap: true,
                     map

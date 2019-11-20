@@ -1,13 +1,30 @@
 body {
     background-color: whitesmoke;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
 
 .bg-water {
     background-color: #1f5d9c!important;
 }
 
+.legendIcon {
+    overflow: hidden;
+    max-height: 200px;
+}
+
+.legendIcon img {
+    overflow: hidden;
+}
+
 .container {
     padding: 2rem 0;
+}
+
+.map__container {
+    flex-grow: 1;
+    position: relative
 }
 
 .add_link {

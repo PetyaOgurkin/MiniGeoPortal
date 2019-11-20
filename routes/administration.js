@@ -2,11 +2,12 @@ const { Router } = require('express');
 const Sequelize = require('sequelize');
 const bcrypt = require('bcryptjs');
 const User = require('../models/users');
+const login = require('../middleware/login');
 const Op = Sequelize.Op;
 
 const router = Router();
 
-router.get('/', async (req, res) => {
+router.get('/', login, async (req, res) => {
 
     try {
         const users = await User.findAll({ where: { permission_level: { [Op.lte]: 2 } }, order: ['id'], raw: true });
@@ -31,7 +32,7 @@ router.get('/', async (req, res) => {
     }
 })
 
-router.post('/adduser', async (req, res) => {
+router.post('/adduser', login, async (req, res) => {
     try {
         const { name, password, permission_level } = req.body;
 
@@ -44,7 +45,8 @@ router.post('/adduser', async (req, res) => {
             const responce = {
                 name,
                 permission_level: permission_level === "1" ? "Пользователь" : permission_level === "2" ? "Модератор" : null,
-                id: task.dataValues.id
+                id: task.dataValues.id,
+                csrf: req.csrfToken()
             }
 
             res.status(201).json(responce);
@@ -55,7 +57,7 @@ router.post('/adduser', async (req, res) => {
     }
 })
 
-router.put('/edituser', async (req, res) => {
+router.put('/edituser', login, async (req, res) => {
     try {
         const user = await User.findByPk(+req.body.id);
 
@@ -67,21 +69,20 @@ router.put('/edituser', async (req, res) => {
             user.password = hashPassword;
         }
 
-        console.log(user);
-
-
         await user.save();
+
+        user.dataValues.csrf = req.csrfToken();
         res.status(200).json(user);
     } catch (error) {
         console.error(error);
     }
 })
 
-router.delete('/deleteuser', async (req, res) => {
+router.delete('/deleteuser', login, async (req, res) => {
     try {
         const user = await User.findByPk(+req.body.id);
         await user.destroy();
-        res.status(204).json({});
+        res.status(200).json({ csrf: req.csrfToken() });
     } catch (error) {
         console.error(error);
     }

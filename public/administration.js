@@ -16,6 +16,8 @@ $('#change_password').on('change', function () {
   $('#edit_password').prop('disabled', !this.checked);
 })
 
+const token = document.querySelector('meta[name="_csrf"]');
+
 
 const adduser = document.querySelector('#addUserDB');
 if (adduser) {
@@ -27,14 +29,17 @@ if (adduser) {
       permission_level: $('#permission').val()
     }
 
+
     fetch('/administration/adduser', {
       method: 'post',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'XSRF-TOKEN': token.getAttribute('value')
       },
       body: JSON.stringify(data)
     }).then(res => res.json())
       .then(user => {
+        token.setAttribute('value', user.csrf);
 
         const html = `
         <tr id="user-${user.id}">
@@ -62,11 +67,15 @@ if (edituser) {
     fetch('/administration/edituser', {
       method: 'put',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'XSRF-TOKEN': token.getAttribute('value')
       },
       body: JSON.stringify(data)
     }).then(res => res.json())
       .then(user => {
+
+        token.setAttribute('value', user.csrf);
+
         $('#name-' + user.id).html(user.name);
         $('#permission-' + user.id).html(+user.permission_level === 1 ? "Пользователь" : "Модератор");
       });
@@ -81,12 +90,15 @@ if (deleteuser) {
     fetch('/administration/deleteuser', {
       method: 'delete',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'XSRF-TOKEN': token.getAttribute('value')
       },
       body: JSON.stringify({ id })
-    }).then(() => {
-      $("#user-" + id).remove();
-    })
+    }).then(res => res.json())
+      .then(body => {
+        token.setAttribute('value', body.csrf);
+        $("#user-" + id).remove();
+      });
   })
 }
 

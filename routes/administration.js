@@ -2,12 +2,12 @@ const { Router } = require('express');
 const Sequelize = require('sequelize');
 const bcrypt = require('bcryptjs');
 const User = require('../models/users');
-const login = require('../middleware/login');
+const { admin } = require('../middleware/permisson');
 const Op = Sequelize.Op;
 
 const router = Router();
 
-router.get('/', login, async (req, res) => {
+router.get('/', admin, async (req, res) => {
 
     try {
         const users = await User.findAll({ where: { permission_level: { [Op.lte]: 2 } }, order: ['id'], raw: true });
@@ -21,7 +21,6 @@ router.get('/', login, async (req, res) => {
             }
         });
 
-
         res.render('administration', {
             title: 'Администроирование',
             isAdministration: true,
@@ -32,7 +31,7 @@ router.get('/', login, async (req, res) => {
     }
 })
 
-router.post('/adduser', login, async (req, res) => {
+router.post('/adduser', admin, async (req, res) => {
     try {
         const { name, password, permission_level } = req.body;
 
@@ -57,7 +56,7 @@ router.post('/adduser', login, async (req, res) => {
     }
 })
 
-router.put('/edituser', login, async (req, res) => {
+router.put('/edituser', admin, async (req, res) => {
     try {
         const user = await User.findByPk(+req.body.id);
 
@@ -78,7 +77,7 @@ router.put('/edituser', login, async (req, res) => {
     }
 })
 
-router.delete('/deleteuser', login, async (req, res) => {
+router.delete('/deleteuser', admin, async (req, res) => {
     try {
         const user = await User.findByPk(+req.body.id);
         await user.destroy();

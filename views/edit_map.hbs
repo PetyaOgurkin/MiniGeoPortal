@@ -4,20 +4,20 @@
 <form action="/catalog/{{map.parent_catalog}}/edit" method="POST" enctype="multipart/form-data" id="edit">
     <div class="form-group">
         <label for="title">Название карты</label>
-        <input type="text" class="form-control" id="title" name="title" placeholder="Введите название карты"
-            value="{{map.title}}">
+        <textarea class="form-control" id="title" name="title" placeholder="Введите название каталога" rows="4"
+            required>{{map.title}}</textarea>
     </div>
 
     <div class="form-group">
         <label for="discription">Описание</label>
-        <input type="text" class="form-control" id="discription" name="discription" placeholder="Введите описание"
-            value="{{map.discription}}">
+        <textarea class="form-control" id="discription" name="discription" placeholder="Введите описание" rows="4"
+            required>{{map.discription}}</textarea>
     </div>
 
     <div class="form-group">
         <label for="url">WMS URL карты</label>
         <input type="text" class="form-control" id="url" name="url" placeholder="Введите WMS адрес карты"
-            value="{{map.url}}">
+            value="{{map.url}}" required>
     </div>
 
     <div class="form-group">

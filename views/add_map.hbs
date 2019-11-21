@@ -4,22 +4,25 @@
 <form action="/catalog/{{catalog.id}}/add" method="POST" enctype="multipart/form-data">
     <div class="form-group">
         <label for="title">Название карты</label>
-        <input type="text" class="form-control" id="title" name="title" placeholder="Введите название карты">
+        <textarea class="form-control" id="title" name="title" placeholder="Введите название карты" rows="4"
+            required></textarea>
     </div>
 
     <div class="form-group">
         <label for="discription">Описание</label>
-        <input type="text" class="form-control" id="discription" name="discription" placeholder="Введите описание">
+        <textarea class="form-control" id="discription" name="discription" placeholder="Введите описание" rows="4"
+            required></textarea>
     </div>
 
     <div class="form-group">
         <label for="url">WMS URL карты</label>
-        <input type="text" class="form-control" id="url" name="url" placeholder="Введите WMS адрес карты">
+        <input type="text" class="form-control" id="url" name="url" placeholder="Введите WMS адрес карты" required>
     </div>
 
     <div class="form-group">
         <label for="img">Изображение</label>
-        <input type="file" class="form-control-file" id="img" name="img" placeholder="Добавьте изображение для превью">
+        <input type="file" class="form-control-file" id="img" name="img" placeholder="Добавьте изображение для превью"
+            required>
     </div>
 
     <div class="form-group">

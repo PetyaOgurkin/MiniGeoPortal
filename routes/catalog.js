@@ -1,8 +1,11 @@
 const { Router } = require('express');
 const Sequelize = require('sequelize');
 const fs = require('fs');
+const { body, validationResult } = require('express-validator');
 const Catalog = require('../models/catalogs');
 const Maps = require('../models/map');
+const { addCatalogValidators } = require('../utils/validators');
+const { mod } = require('../middleware/permisson');
 const router = Router();
 const Op = Sequelize.Op;
 
@@ -31,9 +34,10 @@ router.get('/', async (req, res) => {
 
 })
 
-router.get('/add', (req, res) => {
+router.get('/add', mod, (req, res) => {
     res.render('add_catalog', {
         title: 'Добавить каталог',
+        error: req.flash('error')
     })
 })
 
@@ -41,6 +45,20 @@ router.get('/:subcatalog', async (req, res) => {
 
     try {
         const catalog = await Catalog.findByPk(req.params.subcatalog, { raw: true });
+        if (catalog) {
+            if (req.session.isAuthenticated) {
+                const user_lvl = +req.session.user.permission_level + 1;
+                if (catalog.publicity > user_lvl) {
+                    return res.redirect('/catalog');
+                }
+            }
+            else {
+                if (catalog.publicity > 1) {
+                    return res.redirect('/catalog');
+                }
+            }
+        }
+
         let maps;
 
         if (req.session.isAuthenticated) {
@@ -62,7 +80,7 @@ router.get('/:subcatalog', async (req, res) => {
     }
 })
 
-router.get('/:subcatalog/edit', async (req, res) => {
+router.get('/:subcatalog/edit', mod, async (req, res) => {
 
     if (!req.query.allow) {
         return res.redirect('/catalog');
@@ -91,7 +109,7 @@ router.get('/:subcatalog/edit', async (req, res) => {
 
 })
 
-router.get('/:subcatalog/add', async (req, res) => {
+router.get('/:subcatalog/add', mod, async (req, res) => {
     try {
         const catalog = await Catalog.findByPk(req.params.subcatalog, { raw: true });
         res.render('add_map', {
@@ -103,7 +121,7 @@ router.get('/:subcatalog/add', async (req, res) => {
     }
 })
 
-router.get('/:subcatalog/:map/edit', async (req, res) => {
+router.get('/:subcatalog/:map/edit', mod, async (req, res) => {
     if (!req.query.allow) {
         return res.redirect('/catalog/' + req.params.subcatalog);
     }
@@ -157,13 +175,15 @@ router.get('/:subcatalog/:map', async (req, res) => {
     }
 })
 
-router.post('/add', async (req, res) => {
-    console.log(req.body);
-
+router.post('/add', mod, addCatalogValidators, async (req, res) => {
     try {
-        console.log(req.body);
-
         const { title, discription, publicity } = req.body;
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            req.flash('error', errors.array()[0].msg);
+            return res.status(422).redirect('/catalog/add');
+        }
 
         await Catalog.create({
             title,
@@ -178,7 +198,7 @@ router.post('/add', async (req, res) => {
     }
 })
 
-router.post('/edit', async (req, res) => {
+router.post('/edit', mod, async (req, res) => {
     try {
         const { title, discription, publicity, id } = req.body;
 
@@ -209,7 +229,7 @@ router.post('/edit', async (req, res) => {
 
 })
 
-router.post('/remove', async (req, res) => {
+router.post('/remove', mod, async (req, res) => {
     try {
         const catalog = await Catalog.findByPk(+req.body.id);
 
@@ -240,7 +260,7 @@ router.post('/remove', async (req, res) => {
     }
 })
 
-router.post('/:subcatalog/edit', async (req, res) => {
+router.post('/:subcatalog/edit', mod, async (req, res) => {
     try {
         const { title, discription, publicity, url, id, parent_catalog } = req.body;
 
@@ -272,7 +292,7 @@ router.post('/:subcatalog/edit', async (req, res) => {
     }
 })
 
-router.post('/:subcatalog/remove', async (req, res) => {
+router.post('/:subcatalog/remove', mod, async (req, res) => {
     try {
         const map = await Maps.findByPk(+req.body.id);
 
@@ -292,7 +312,7 @@ router.post('/:subcatalog/remove', async (req, res) => {
     }
 })
 
-router.post('/:subcatalog/add', async (req, res) => {
+router.post('/:subcatalog/add', mod, async (req, res) => {
     try {
         const { title, discription, publicity, url } = req.body;
 

@@ -1,24 +1,26 @@
 const { Router } = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('../models/users');
+const { guest, client } = require('../middleware/permisson');
 
 const router = Router();
 
-router.get('/', (req, res) => {
+router.get('/', guest, (req, res) => {
+
     res.render('login', {
         title: 'Авторизация',
-        isLogin: true
+        isLogin: true,
+        loginError: req.flash('loginError')
     })
 })
 
-router.get('/logout', async (req, res) => {
-
+router.get('/logout', client, async (req, res) => {
     req.session.destroy(() => {
         res.redirect('/');
     });
 })
 
-router.post('/', async (req, res) => {
+router.post('/', guest, async (req, res) => {
 
     try {
         const { login, password } = req.body;
@@ -37,10 +39,12 @@ router.post('/', async (req, res) => {
                 });
             }
             else {
+                req.flash('loginError', 'Неверный пароль');
                 res.redirect('/login');
             }
         }
         else {
+            req.flash('loginError', 'Такого пользователя не существует');
             res.redirect('/login');
         }
     } catch (error) {

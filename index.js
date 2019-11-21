@@ -4,6 +4,7 @@ const path = require('path');
 const expressSession = require('express-session');
 const SessionStore = require('express-session-sequelize')(expressSession.Store);
 const csrf = require('csurf');
+const flash = require('connect-flash');
 const db = require('./utils/database');
 const homeRoutes = require('./routes/home');
 const catalogRoutes = require('./routes/catalog');
@@ -42,6 +43,7 @@ app.use(expressSession({
 
 app.use(fileMiddleware.single('img'));
 app.use(csrf());
+app.use(flash());
 app.use(varMiddleaware);
 
 

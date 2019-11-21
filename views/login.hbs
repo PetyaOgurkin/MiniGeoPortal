@@ -1,5 +1,9 @@
 <h1 style="text-align: center;">Авторизация</h1>
 
+{{#if loginError}}
+<p class="alert">{{loginError}}</p>
+{{/if}}
+
 <form action="/login" method="POST" class="form-input form-login">
     <div class="form-group">
         <label for="login">Логин</label>

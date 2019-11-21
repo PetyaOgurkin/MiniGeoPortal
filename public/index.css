@@ -9,14 +9,14 @@ body {
     background-color: #1f5d9c!important;
 }
 
-.legendIcon {
+/* .legendIcon {
     overflow: hidden;
     max-height: 200px;
 }
 
 .legendIcon img {
     overflow: hidden;
-}
+} */
 
 .container {
     padding: 2rem 0;

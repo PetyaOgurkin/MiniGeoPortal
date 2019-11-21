@@ -30,6 +30,7 @@ app.set('views', 'views');
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/icons', express.static(path.join(__dirname, 'icons')));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(expressSession({
@@ -39,8 +40,8 @@ app.use(expressSession({
     saveUninitialized: false,
 }));
 
-app.use(csrf());
 app.use(fileMiddleware.single('img'));
+app.use(csrf());
 app.use(varMiddleaware);
 
 

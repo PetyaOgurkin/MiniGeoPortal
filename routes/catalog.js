@@ -158,7 +158,11 @@ router.get('/:subcatalog/:map', async (req, res) => {
 })
 
 router.post('/add', async (req, res) => {
+    console.log(req.body);
+
     try {
+        console.log(req.body);
+
         const { title, discription, publicity } = req.body;
 
         await Catalog.create({

@@ -47,10 +47,12 @@
         </select>
     </div>
 
+    <input type="hidden" name="_csrf" value="{{csrf}}">
     <input type="hidden" name="id" value="{{map.id}}">
 </form>
 
 <form action="/catalog/{{map.parent_catalog}}/remove" method="POST" id="delete">
+    <input type="hidden" name="_csrf" value="{{csrf}}">
     <input type="hidden" name="id" value="{{map.id}}">
 </form>
 

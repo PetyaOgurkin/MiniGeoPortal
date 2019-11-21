@@ -68,8 +68,8 @@ init().then((layers) => {
         });
 
         const legendSrc = wmsSource.getLegendUrl(map.getView().getResolution(), {
-            'SYMBOLSPACE': 1,
-            'ICONLABELSPACE': 1,
+            'SYMBOLSPACE': 5,
+            'ICONLABELSPACE': 3,
             'LAYERSPACE': 1,
             'LAYERFONTBOLD': false,
             'LAYERTITLE': false,
@@ -77,13 +77,18 @@ init().then((layers) => {
         });
 
         check.innerHTML += `
-            <div class="form-check">
+            <div class="form-check" style='margin-bottom: 2rem'>
                 <input class="form-check-input" type="checkbox" id="${layer}" checked="checked">
                 <label class="form-check-label" for="${layer}">${layers.layersTitle[idx]}</label>
-                <div class="legendIcon">
-                    <img src='${legendSrc}'>
+                <button class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#iconlegend-${idx}"
+                aria-expanded="false" aria-controls="collapseExample"><img src='../../icons/arrow_drop_up.svg'></button>
+                <div class="collapse legendIcon show" id="iconlegend-${idx}">
+                    <img style='margin-left: 2rem' src='${legendSrc}'>
                 </div>
-            </div>`
+            </div>`;
+
+        
+
     })
 
     check.querySelectorAll("input[type=checkbox]").forEach(node => {

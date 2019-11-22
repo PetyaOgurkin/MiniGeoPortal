@@ -51,8 +51,24 @@ const map = new ol.Map({
     view: new ol.View({
         center: ol.proj.fromLonLat([110, 70]),
         zoom: 3
-    })
+    }),
+    controls: ol.control.defaults().extend([new ol.control.ScaleLine()])
 });
+
+document.querySelector('#close_info').addEventListener('click', () => {
+    document.querySelector('#infoHidden').classList.add('hidden');
+})
+
+document.querySelector('#legendBtn').addEventListener('click', () => {
+    const legend = document.querySelector('#legendHidden');
+
+    if (legend.classList.contains('hidden')) {
+        document.querySelector('#legendHidden').classList.remove('hidden');
+    }
+    else {
+        document.querySelector('#legendHidden').classList.add('hidden');
+    }
+})
 
 init().then((layers) => {
     const check = document.querySelector("#check");
@@ -77,17 +93,13 @@ init().then((layers) => {
         });
 
         check.innerHTML += `
-            <div class="form-check" style='margin-bottom: 2rem'>
-                <input class="form-check-input" type="checkbox" id="${layer}" checked="checked">
-                <label class="form-check-label" for="${layer}">${layers.layersTitle[idx]}</label>
-                <button class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#iconlegend-${idx}"
-                aria-expanded="false" aria-controls="collapseExample"><img src='../../icons/arrow_drop_up.svg'></button>
-                <div class="collapse legendIcon show" id="iconlegend-${idx}">
-                    <img style='margin-left: 2rem' src='${legendSrc}'>
+            <div class="form-group custom-control custom-checkbox mr-sm-2" style='margin-bottom: 0.5rem'>
+                <input class="custom-control-input" type="checkbox" id="${layer}" checked="checked">
+                <label class="custom-control-label" for="${layer}"><h5>${layers.layersTitle[idx]}</h5></label>
+                <div>
+                    <img style='margin-top: -10px' src='${legendSrc}'>
                 </div>
             </div>`;
-
-        
 
     })
 
@@ -110,21 +122,58 @@ init().then((layers) => {
         })
     })
 
-
     map.on('singleclick', function (evt) {
+        const info = document.getElementById('info');
+        info.innerHTML = '';
 
         map.forEachLayerAtPixel(evt.pixel, function (feature) {
             const layer = feature.getSource();
 
             if (layer.getUrls().indexOf(WMS_URL) != -1) {
+
                 const url = layer.getFeatureInfoUrl(evt.coordinate, map.getView().getResolution(), 'EPSG:3857',
-                    { 'INFO_FORMAT': 'text/html' });
+                    {
+                        'INFO_FORMAT': 'text/xml'
+                    });
 
                 if (url) {
+                    const parser = new DOMParser();
+
                     fetch(url)
-                        .then(function (response) { return response.text(); })
-                        .then(function (html) {
-                            document.getElementById('info').innerHTML = html;
+                        .then(response => response.text())
+                        .then(xml => {
+
+                            const data = parser.parseFromString(xml, "text/xml");
+
+                            const layerInfo = data.querySelector('Layer');
+
+                            if (layerInfo.innerHTML !== '') {
+                                const titleIdx = layers.layersName.findIndex(val => val === layerInfo.getAttribute('name'));
+
+                                let html = `
+                                    <h5 style='margin-bot: 2rem'>${layers.layersTitle[titleIdx]}</h5>
+                                    <table class="table table-sm">
+                                        <tbody>`;
+
+
+                                layerInfo.querySelectorAll('Attribute').forEach(attr => {
+                                    html += `
+                                        <tr>
+                                            <td>${attr.getAttribute('name')}</td>
+                                            <td>${attr.getAttribute('value')}</td>
+                                        </tr>`;
+                                })
+
+                                html += '</tbody></table>';
+                                info.innerHTML += html;
+                            }
+
+                            if (info.innerHTML !== '') {
+                                document.querySelector('#infoHidden').classList.remove('hidden')
+                            }
+                            else {
+                                document.querySelector('#infoHidden').classList.add('hidden')
+                            }
                         });
                 }
             }

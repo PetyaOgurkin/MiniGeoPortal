@@ -1,17 +1,15 @@
 <div id="map" style="width: 100%; height: 100%"></div>
 <input type="hidden" id="wms_url" value="{{map.url}}">
-<div style="position: absolute; top: 2rem; right: 2rem">
+<div class="legend__btn">
     <p>
-        <button class="btn btn-dark" type="button" data-toggle="collapse" data-target="#collapseExample"
-            aria-expanded="false" aria-controls="collapseExample">
+        <button class="btn btn-dark" type="button" id="legendBtn">
             Слои
             <img src="../../icons/layers.svg" alt="layers">
         </button>
     </p>
-
 </div>
 
-<div style="position: absolute; top: 5rem; right: 2rem; min-width: 300px; max-width: 400px; max-height: 70vh; overflow: auto" class="collapse legend" id="collapseExample">
+<div class="legend hidden" id="legendHidden">
     <div class="card card-body">
         <div id="check">
 
@@ -20,5 +18,15 @@
 </div>
 
 
+<div class="info hidden" id="infoHidden">
+    <div class="card card-body">
 
-<div id="info"></div>
+        <h2 class="card-title" style="margin-bottom: 1rem;">Информация<button type="button" class="close"
+                id="close_info">
+                <span aria-hidden="true">&times;</span>
+            </button></h2>
+
+        <div id="info" class="info__content">
+        </div>
+    </div>
+</div>

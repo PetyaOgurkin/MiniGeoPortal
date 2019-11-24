@@ -12,6 +12,7 @@ const loginRoutes = require('./routes/login');
 const administartionRoutes = require('./routes/administration');
 const fileMiddleware = require('./middleware/file');
 const varMiddleaware = require('./middleware/variables');
+const errorHandler = require('./middleware/error');
 
 
 const app = express();
@@ -51,6 +52,9 @@ app.use('/', homeRoutes);
 app.use('/catalog', catalogRoutes);
 app.use('/login', loginRoutes);
 app.use('/administration', administartionRoutes);
+
+
+app.use(errorHandler);
 
 
 const PORT = process.env.PORT || 3000;

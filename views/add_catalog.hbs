@@ -7,14 +7,14 @@
 <form action="/catalog/add" method="POST" enctype="multipart/form-data">
     <div class="form-group">
         <label for="title">Название каталога</label>
-        <textarea class="form-control" id="title" name="title" placeholder="Введите название каталога" rows="4"
-            ></textarea>
+        <textarea class="form-control" id="title" name="title" placeholder="Введите название каталога"
+            rows="4">{{data.title}}</textarea>
     </div>
 
     <div class="form-group">
         <label for="discription">Описание</label>
         <textarea class="form-control" id="discription" name="discription" placeholder="Введите описание" rows="4"
-            required></textarea>
+            required>{{data.discription}}</textarea>
     </div>
 
     <div class="form-group">
@@ -26,9 +26,11 @@
     <div class="form-group">
         <label for="publicity">Видимость каталога</label>
         <select class="form-control" id="publicity" name="publicity">
+            {{#select data.publicity}}
             <option value="3">Только модераторы</option>
             <option value="2">Модераторы и пользователи</option>
             <option value="1">Все</option>
+            {{/select}}
         </select>
     </div>
 

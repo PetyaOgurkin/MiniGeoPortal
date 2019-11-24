@@ -1,12 +1,13 @@
 body {
-    background-color: whitesmoke;
+    background-color: rgba(173, 216, 230, 0.2);
     display: flex;
     flex-direction: column;
     height: 100vh;
+    font-family: 'OfficinaSerif-BookCTT';
 }
 
 .bg-water {
-    background-color: #1f5d9c!important;
+    background: linear-gradient(45deg, #00011D, #00A0E9);
 }
 
 .container {

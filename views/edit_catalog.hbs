@@ -1,5 +1,9 @@
 <h1>Редкатирование каталога: {{catalog.title}}</h1>
 
+{{#if error}}
+<p class="alert">{{error}}</p>
+{{/if}}
+
 <form action="/catalog/edit" method="POST" enctype="multipart/form-data" id="edit">
     <div class="form-group">
         <label for="title">Название каталога</label>

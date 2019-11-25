@@ -28,6 +28,14 @@ const map = db.define('Map', {
     img_url: {
         type: Sequelize.STRING,
         allowNull: false
+    },
+    projection: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    tile: {
+        type: Sequelize.STRING,
+        allowNull: false
     }
 })
 

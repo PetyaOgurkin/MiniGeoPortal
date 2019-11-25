@@ -21,6 +21,30 @@
     </div>
 
     <div class="form-group">
+        <label for="tile">Подложка</label>
+        <select class="form-control" id="tile" name="tile">
+            {{#select map.tile}}
+            <option value="empty">Без подложки</option>
+            <option value="topo">Icm topo</option>
+            <option value="sentinel">Sentinel</option>
+            <option value="relief_dark">Рельеф</option>
+            <option value="osm">OSM</option>
+            {{/select}}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="projection">Проекция</label>
+        <select class="form-control" id="projection" name="projection">
+            {{#select map.projection}}
+            <option value="4326">EPSG: 4326</option>
+            <option value="3857">EPSG: 3857</option>
+            <option value="3576">EPSG: 3576</option>
+            {{/select}}
+        </select>
+    </div>
+
+    <div class="form-group">
         <label for="img">Изображение</label>
         <input type="file" class="form-control-file" id="img" name="img" placeholder="Добавьте изображение для превью">
     </div>

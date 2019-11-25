@@ -4,7 +4,7 @@ const fs = require('fs');
 const { validationResult } = require('express-validator');
 const Catalog = require('../models/catalogs');
 const Maps = require('../models/map');
-const { сatalogValidators } = require('../utils/validators');
+const { сatalogValidators, mapValidators } = require('../utils/validators');
 const { mod } = require('../middleware/permisson');
 const router = Router();
 const Op = Sequelize.Op;
@@ -129,6 +129,7 @@ router.get('/:subcatalog/add', mod, async (req, res) => {
         if (catalog) {
             res.render('add_map', {
                 title: 'Добавить карту',
+                isEditMap: true,
                 catalog
             })
         }
@@ -396,20 +397,108 @@ router.post('/:subcatalog/remove', mod, async (req, res) => {
     }
 })
 
-router.post('/:subcatalog/add', mod, async (req, res) => {
+router.post('/:subcatalog/add', mapValidators, mod, async (req, res) => {
     try {
-        const { title, discription, publicity, url } = req.body;
+        const { title, discription, publicity, url, projection, tile } = req.body;
 
-        await Maps.create({
-            title,
-            discription,
-            publicity,
-            url,
-            parent_catalog: req.params.subcatalog,
-            img_url: req.file.path,
-        });
+        if (!Number.isInteger(+req.params.subcatalog)) {
+            return res.redirect('/catalog');
+        }
 
-        res.status(201).redirect('/catalog/' + req.params.subcatalog);
+        const catalog = await Catalog.findByPk(req.params.subcatalog, { raw: true });
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).render('add_map', {
+                title: 'Добавить карту',
+                error: errors.array()[0].msg,
+                isEditMap: true,
+                catalog,
+                data: {
+                    title,
+                    discription,
+                    publicity,
+                    url,
+                    projection,
+                    tile
+                }
+            });
+        }
+
+        if (req.file) {
+            switch (tile) {
+                case 'empty':
+                    break;
+                case 'topo': case 'sentinel': case 'relief_dark':
+                    if (projection !== '3576') {
+                        req.flash('error', 'Неверное значение проекции');
+                        return res.status(422).render('add_map', {
+                            title: 'Добавить каталог',
+                            error: req.flash('error'),
+                            isEditMap: true,
+                            catalog,
+                            data: {
+                                title,
+                                discription,
+                                publicity,
+                                url,
+                                projection,
+                                tile
+                            }
+                        });
+                    }
+                    break;
+                case 'osm':
+                    if (projection !== '3857') {
+                        req.flash('error', 'Неверное значение проекции');
+                        return res.status(422).render('add_map', {
+                            title: 'Добавить каталог',
+                            error: req.flash('error'),
+                            isEditMap: true,
+                            catalog,
+                            data: {
+                                title,
+                                discription,
+                                publicity,
+                                url,
+                                projection,
+                                tile
+                            }
+                        });
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            await Maps.create({
+                title,
+                discription,
+                publicity,
+                url,
+                parent_catalog: req.params.subcatalog,
+                img_url: req.file.path,
+            });
+            res.status(201).redirect('/catalog/' + req.params.subcatalog);
+        }
+        else {
+            req.flash('error', 'Файл изображения должен быть формата соответсвующего формата.');
+            return res.status(422).render('add_map', {
+                title: 'Добавить каталог',
+                error: req.flash('error'),
+                isEditMap: true,
+                catalog,
+                data: {
+                    title,
+                    discription,
+                    publicity,
+                    url,
+                    projection,
+                    tile
+                }
+            });
+        }
+
     } catch (error) {
         console.error(error);
     }

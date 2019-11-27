@@ -41,14 +41,45 @@ async function init() {
     return layers;
 }
 
+
+const tile = document.querySelector('#tile').value;
+const proj = document.querySelector('#projection').value;
+let tiled, projection;
+
+switch (tile) {
+    case 'osm':
+        tiled = [
+            new ol.layer.Tile({
+                source: new ol.source.OSM()
+            })
+        ]
+
+        projection = ol.proj.get('EPSG:' + proj);
+        break;
+    case 'empty':
+        tiled = [];
+        projection = ol.proj.get('EPSG:' + proj);
+        break;
+    case 'topo':
+        break;
+    case 'relief_dark':
+        break;
+    case 'sentinel':
+        break;
+    default:
+        break;
+}
+
+console.log(tiled);
+console.log(projection);
+
+
+
 const map = new ol.Map({
     target: 'map',
-    layers: [
-        new ol.layer.Tile({
-            source: new ol.source.OSM()
-        })
-    ],
+    layers: tiled,
     view: new ol.View({
+        projection,
         center: ol.proj.fromLonLat([110, 70]),
         zoom: 3
     }),
@@ -131,7 +162,7 @@ init().then((layers) => {
 
             if (layer.getUrls().indexOf(WMS_URL) != -1) {
 
-                const url = layer.getFeatureInfoUrl(evt.coordinate, map.getView().getResolution(), 'EPSG:3857',
+                const url = layer.getFeatureInfoUrl(evt.coordinate, map.getView().getResolution(), 'EPSG:' + proj,
                     {
                         'INFO_FORMAT': 'text/xml'
                     });

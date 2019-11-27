@@ -399,6 +399,11 @@ router.post('/:subcatalog/remove', mod, async (req, res) => {
 
 router.post('/:subcatalog/add', mapValidators, mod, async (req, res) => {
     try {
+
+        console.log(req.body);
+
+
+
         const { title, discription, publicity, url, projection, tile } = req.body;
 
         if (!Number.isInteger(+req.params.subcatalog)) {
@@ -478,6 +483,8 @@ router.post('/:subcatalog/add', mapValidators, mod, async (req, res) => {
                 url,
                 parent_catalog: req.params.subcatalog,
                 img_url: req.file.path,
+                projection,
+                tile
             });
             res.status(201).redirect('/catalog/' + req.params.subcatalog);
         }

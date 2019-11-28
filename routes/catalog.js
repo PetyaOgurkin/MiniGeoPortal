@@ -406,6 +406,9 @@ router.post('/:subcatalog/add', mapValidators, mod, async (req, res) => {
 
         const { title, discription, publicity, url, projection, tile } = req.body;
 
+        console.log(req.body);
+
+
         if (!Number.isInteger(+req.params.subcatalog)) {
             return res.redirect('/catalog');
         }

@@ -1,4 +1,6 @@
 const WMS_URL = document.querySelector('#wms_url').value + "?";
+const TILE = document.querySelector('#tile').value;
+const PROJECTION_CODE = 'EPSG:' + document.querySelector('#projection').value;
 
 async function getLayers() {
     const parser = new ol.format.WMSCapabilities();
@@ -11,11 +13,6 @@ async function getLayers() {
     }
 }
 
-function getLegend(layers) {
-    layers.forEach(layer)
-}
-
-
 const layersGroup = layers => {
     return layers.map(layer => {
         return new ol.layer.Tile({
@@ -23,14 +20,15 @@ const layersGroup = layers => {
                 url: WMS_URL,
                 params: {
                     'LAYERS': layer,
-                    'TILED': true
+                    'TILED': true,
+                    'CRS': PROJECTION
                 },
-                transition: 0
+                transition: 0,
+                projection
             }),
         })
     })
 }
-
 
 async function init() {
 
@@ -42,49 +40,150 @@ async function init() {
 }
 
 
-const tile = document.querySelector('#tile').value;
-const proj = document.querySelector('#projection').value;
-let tiled, projection;
 
-switch (tile) {
-    case 'osm':
-        tiled = [
-            new ol.layer.Tile({
-                source: new ol.source.OSM()
-            })
-        ]
+switch (PROJECTION_CODE) {
+    case 'EPSG:3857':
 
-        projection = ol.proj.get('EPSG:' + proj);
         break;
-    case 'empty':
-        tiled = [];
-        projection = ol.proj.get('EPSG:' + proj);
+    case 'EPSG:4326':
+
         break;
-    case 'topo':
-        break;
-    case 'relief_dark':
-        break;
-    case 'sentinel':
-        break;
-    default:
+    case 'EPSG:3576':
+
+        proj4.defs("EPSG:3576", "+proj=laea +lat_0=90 +lon_0=0 +x_0=90 +y_0=0 +datum=WGS84 +units=m +no_defs");
+        ol.proj.proj4.register(proj4);
+
+        const extent = [-4859377.085, -7109342.085, 5159377.085, 2909412.085]
+
+        const projection = new ol.proj.Projection({
+            code: PROJECTION_CODE,
+            extent,
+            global: false,
+            units: 'm'
+        });
+
+        const startResolution = 19567.87923828125;
+        const resolutions = [];
+        for (let i = 0; i < 13; i++) {
+            resolutions.push(startResolution / Math.pow(2, i));
+        }
+
+        let tiled = [];
+        if (TILE !== 'empty') {
+
+            let tiled_url;
+            let lvls;
+            switch (TILE) {
+                case 'topo':
+                    tiled_url = 'http://monitor.krasn.ru/tiles/topo/{z}/{x}/{-y}.jpeg';
+                    lvls = 17;
+                    break;
+                case 'sentinel':
+                    tiled_url = 'http://monitor.krasn.ru/tiles/sentinel2016/{z}/{x}/{-y}.jpeg';
+                    lvls = 12;
+                    break;
+                case 'relief_dark':
+                    tiled_url = 'http://monitor.krasn.ru/tiles/relief_dark/{z}/{x}/{-y}.jpeg';
+                    lvls = 13;
+                    break;
+                default:
+                    console.log('err');
+                    break;
+            }
+            tiled = [
+                new ol.layer.Tile({
+                    source: new ol.source.XYZ({
+                        url: 'http://monitor.krasn.ru/tiles/relief_dark/{z}/{x}/{-y}.jpeg',
+                        projection,
+                        tileGrid: new ol.tilegrid.TileGrid({
+                            extent,
+                            resolutions,
+                            origin: ol.extent.getTopLeft(extent)
+                        })
+                    })
+                })
+            ]
+
+        }
+
+        const map = new ol.Map({
+            layers: [
+
+            ],
+            target: 'map',
+            view: new ol.View({
+                center: [0, 0],
+                zoom: 3,
+                projection,
+                extent
+            }),
+        });
+
         break;
 }
 
-console.log(tiled);
-console.log(projection);
 
+proj4.defs("EPSG:3576", "+proj=laea +lat_0=90 +lon_0=0 +x_0=90 +y_0=0 +datum=WGS84 +units=m +no_defs");
+ol.proj.proj4.register(proj4);
+
+const extent = [-4859377.085, -7109342.085, 5159377.085, 2909412.085]
+
+const projection = new ol.proj.Projection({
+    code: 'EPSG:3576',
+    extent,
+    global: false,
+    units: 'm'
+});
+
+/* [-43e5, -48e5, 578e4, 528e4] */
+
+const startResolution = 19567.87923828125;
+const resolutions = [];
+for (let i = 0; i < 13; i++) {
+    resolutions.push(startResolution / Math.pow(2, i));
+}
 
 
 const map = new ol.Map({
+    layers: [
+        new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: 'http://monitor.krasn.ru/tiles/relief_dark/{z}/{x}/{-y}.jpeg',
+                projection,
+                tileGrid: new ol.tilegrid.TileGrid({
+                    extent,
+                    resolutions,
+                    origin: ol.extent.getTopLeft(extent)
+                })
+            })
+        })
+    ],
     target: 'map',
-    layers: tiled,
+    view: new ol.View({
+        center: [0, 0],
+        zoom: 3,
+        projection,
+        extent
+    }),
+});
+
+
+
+/* const map = new ol.Map({
+    layers: [
+        new ol.layer.Tile({
+            source: new ol.source.OSM()
+        })
+    ],
+    target: 'map',
     view: new ol.View({
         projection,
         center: ol.proj.fromLonLat([110, 70]),
         zoom: 3
     }),
     controls: ol.control.defaults().extend([new ol.control.ScaleLine()])
-});
+}); */
+
 
 document.querySelector('#close_info').addEventListener('click', () => {
     document.querySelector('#infoHidden').classList.add('hidden');
@@ -162,7 +261,7 @@ init().then((layers) => {
 
             if (layer.getUrls().indexOf(WMS_URL) != -1) {
 
-                const url = layer.getFeatureInfoUrl(evt.coordinate, map.getView().getResolution(), 'EPSG:' + proj,
+                const url = layer.getFeatureInfoUrl(evt.coordinate, map.getView().getResolution(), 'EPSG:3576',
                     {
                         'INFO_FORMAT': 'text/xml'
                     });
@@ -212,11 +311,3 @@ init().then((layers) => {
     });
 
 })
-
-
-
-
-
-
-
-

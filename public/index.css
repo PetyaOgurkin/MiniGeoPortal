@@ -6,6 +6,18 @@ body {
     font-family: 'OfficinaSerif-BookCTT';
 }
 
+.map__title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 6rem;
+    cursor: default;
+}
+
+.title {
+    margin-bottom: 2rem;
+}
+
 .bg-water {
     background: linear-gradient(45deg, #00011D, #00A0E9);
 }
@@ -19,7 +31,7 @@ body {
     position: relative
 }
 
-.add_link {
+.add__link {
     padding: 1rem 0;
 }
 
@@ -43,12 +55,8 @@ body {
 }
 
 .form-input {
-    width: 600px;
+    max-width: 600px;
     margin: 0 auto;
-}
-
-.form-login {
-    padding: 4rem 0;
 }
 
 .form-changepass {
@@ -77,7 +85,7 @@ body {
 }
 
 .submit-btns>button {
-    margin-right: 2rem;
+    margin-right: 1rem;
 }
 
 .alert {
@@ -150,8 +158,20 @@ body {
     }
 }
 
+@media (max-width: 767px) {
+    .map__title {
+        display: none;
+    }
+}
+
 @media (max-width: 575px) {
     .container {
-        padding: 2rem 3rem;
+        padding: 2rem 2rem;
+    }
+    .navbar-brand {
+        margin-right: 0;
+    }
+    h1 {
+        font-size: 2rem;
     }
 }

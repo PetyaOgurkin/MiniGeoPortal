@@ -24,10 +24,11 @@ router.post('/', guest, async (req, res) => {
 
     try {
         const { login, password } = req.body;
-        const user = await User.findOne({ where: { name: login }, raw: true });
+
+        const user = await User.findOne({ where: { name: login.toLowerCase() }, raw: true });
 
         if (user) {
-            const password_check = await bcrypt.compare(password, user.password);
+            const password_check = await bcrypt.compare(password.toLowerCase(), user.password);
             if (password_check) {
                 req.session.user = user;
                 req.session.isAuthenticated = true;

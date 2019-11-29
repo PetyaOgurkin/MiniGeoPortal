@@ -1,8 +1,10 @@
 const { Router } = require('express');
 const Sequelize = require('sequelize');
 const bcrypt = require('bcryptjs');
+const { validationResult } = require('express-validator');
 const User = require('../models/users');
 const { admin } = require('../middleware/permisson');
+const { addUserValidators, editUserValidators } = require('../utils/validators');
 const Op = Sequelize.Op;
 
 const router = Router();
@@ -31,13 +33,19 @@ router.get('/', admin, async (req, res) => {
     }
 })
 
-router.post('/adduser', admin, async (req, res) => {
+router.post('/adduser', admin, addUserValidators, async (req, res) => {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({
+                error: errors.array()[0].msg,
+                csrf: req.csrfToken()
+            });
+        }
         const { name, password, permission_level } = req.body;
-
-        const hashPassword = await bcrypt.hash(password, 10);
+        const hashPassword = await bcrypt.hash(password.toLowerCase(), 10);
         User.create({
-            name,
+            name: name.toLowerCase(),
             password: hashPassword,
             permission_level
         }).then(task => {
@@ -56,22 +64,54 @@ router.post('/adduser', admin, async (req, res) => {
     }
 })
 
-router.put('/edituser', admin, async (req, res) => {
+router.put('/edituser', admin, editUserValidators, async (req, res) => {
     try {
-        const user = await User.findByPk(+req.body.id);
-
-        user.name = req.body.name;
-        user.permission_level = req.body.permission_level;
-
-        if (req.body.password !== null) {
-            const hashPassword = await bcrypt.hash(req.body.password, 10);
-            user.password = hashPassword;
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({
+                error: errors.array()[0].msg,
+                csrf: req.csrfToken()
+            });
         }
 
-        await user.save();
+        const { password, permission_level, id } = req.body;
 
-        user.dataValues.csrf = req.csrfToken();
-        res.status(200).json(user);
+        if (password !== null) {
+            if (!(password.match(/^[a-z0-9]+$/i) && password.length >= 3 && password.length <= 255)) {
+                return res.status(422).json({
+                    error: 'Некорректный пароль',
+                    csrf: req.csrfToken()
+                });
+            }
+        }
+
+        if (!Number.isInteger(+id)) {
+            return res.status(422).json({
+                error: 'Такого пользователя не существует',
+                csrf: req.csrfToken()
+            });
+        }
+
+        const user = await User.findByPk(+id);
+        if (user) {
+            user.permission_level = permission_level;
+            if (password !== null) {
+                const hashPassword = await bcrypt.hash(password.toLowerCase(), 10);
+                user.password = hashPassword;
+            }
+
+            await user.save();
+
+            user.dataValues.csrf = req.csrfToken();
+
+            res.status(200).json(user);
+        }
+        else {
+            return res.status(422).json({
+                error: 'Такого пользователя не существует',
+                csrf: req.csrfToken()
+            });
+        }
     } catch (error) {
         console.error(error);
     }
@@ -79,9 +119,23 @@ router.put('/edituser', admin, async (req, res) => {
 
 router.delete('/deleteuser', admin, async (req, res) => {
     try {
+        if (!Number.isInteger(+req.body.id)) {
+            return res.status(422).json({
+                error: 'Такого пользователя не существует',
+                csrf: req.csrfToken()
+            });
+        }
         const user = await User.findByPk(+req.body.id);
-        await user.destroy();
-        res.status(200).json({ csrf: req.csrfToken() });
+        if (user) {
+            await user.destroy();
+            res.status(200).json({ csrf: req.csrfToken() });
+        }
+        else {
+            return res.status(422).json({
+                error: 'Такого пользователя не существует',
+                csrf: req.csrfToken()
+            });
+        }
     } catch (error) {
         console.error(error);
     }

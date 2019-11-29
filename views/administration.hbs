@@ -46,6 +46,9 @@
                 </button>
             </div>
             <div class="modal-body">
+
+                <p class="alert" id="addUserError" style="display: none;"></p>
+
                 <div class="form-group">
                     <label for="login">Логин</label>
                     <input type="text" class="form-control" id="login">
@@ -66,7 +69,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" id="addUserDB">Готово</button>
+                <button type="button" class="btn btn-primary" id="addUserDB">Готово</button>
             </div>
         </div>
     </div>
@@ -84,9 +87,12 @@
                 </button>
             </div>
             <div class="modal-body">
+
+                <p class="alert" id="editUserError" style="display: none;"></p>
+
                 <div class="form-group">
                     <label for="edit_login">Логин</label>
-                    <input type="text" class="form-control" id="edit_login">
+                    <input type="text" class="form-control" id="edit_login" readonly>
                 </div>
 
                 <div class="form-group form-changepass">
@@ -111,10 +117,10 @@
                 <input type="hidden" id="userId">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger mr-auto" data-dismiss="modal" id="deleteUserDB">Удалить
+                <button type="button" class="btn btn-danger mr-auto" id="deleteUserDB">Удалить
                     пользователя</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" id="editUserDB">Готово</button>
+                <button type="button" class="btn btn-primary" id="editUserDB">Готово</button>
             </div>
         </div>
     </div>

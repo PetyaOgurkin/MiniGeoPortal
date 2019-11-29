@@ -2,6 +2,19 @@ const tile_box = document.querySelector('#tile');
 const proj_box = document.querySelector('#projection');
 const proj_hidden = document.querySelector('#projection_hidden');
 
+if (tile_box.value !== 'empty') {
+    proj_box.disabled = true;
+}
+
+const parent_catalog = document.querySelector('#parent_catalog');
+if (parent_catalog) {
+    parent_catalog.querySelectorAll('option').forEach(option => {
+        if (option.innerHTML.length > 70) {
+            option.innerHTML = option.innerHTML.slice(0, 70) + '...'
+        }
+
+    })
+}
 
 proj_box.addEventListener('change', () => {
     proj_hidden.value = proj_box.value;

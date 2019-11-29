@@ -1,8 +1,8 @@
-<h1>Каталог</h1>
+<h1 class="title">Каталог</h1>
 
 
 {{#ifEditLvl user_lvl}}
-<p class="add_link"><a href="/catalog/add">Добавить каталог</a></p>
+<p class="add__link"><a href="/catalog/add">Добавить каталог</a></p>
 {{/ifEditLvl}}
 
 
@@ -13,7 +13,7 @@
         <div class="card">
             <a href="/catalog/{{id}}"><img class="card-img-top" src="{{img_url}}" href="/catalog/{{id}}"></a>
             <div class="card-body catalog-card-body">
-                <h5 class="card-title">{{title}}</h5>
+                <h5 class="card-title"><b>{{title}}</b></h5>
                 <p class="card-text">{{discription}}</p>
             </div>
             <div class="card-footer bg-transparent">

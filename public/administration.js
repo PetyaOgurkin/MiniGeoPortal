@@ -2,6 +2,7 @@ $('#add_user').on('hidden.bs.modal', function () {
   $('#login').val("");
   $('#password').val("");
   $("#permission").val("1");
+  $('#addUserError').html('').css({ display: 'none' });
 })
 
 $('#edit_user').on('hidden.bs.modal', function () {
@@ -9,6 +10,7 @@ $('#edit_user').on('hidden.bs.modal', function () {
   $('#edit_password').val("").prop("disabled", true);
   $("#edit_permission").val("1");
   $('#change_password').prop("checked", false);
+  $('#editUserError').html('').css({ display: 'none' });
 })
 
 
@@ -41,14 +43,20 @@ if (adduser) {
       .then(user => {
         token.setAttribute('value', user.csrf);
 
-        const html = `
-        <tr id="user-${user.id}">
-          <td id="name-${user.id}">${user.name}</td>
-          <td id="permission-${user.id}">${user.permission_level}</td>
-          <td><button class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#edit_user" id="edit-${user.id}">Редактировать</button></td>
-       </tr>`
+        if (user.error) {
+          $('#addUserError').html(user.error).css({ display: 'block' });
+        }
+        else {
+          const html = `
+          <tr id="user-${user.id}">
+            <td id="name-${user.id}">${user.name.toLowerCase()}</td>
+            <td id="permission-${user.id}">${user.permission_level}</td>
+            <td><button class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#edit_user" id="edit-${user.id}">Редактировать</button></td>
+         </tr>`
 
-        $('#addUserTR').before(html);
+          $('#addUserTR').before(html);
+          $('#add_user').modal('hide');
+        }
       })
   })
 }
@@ -76,8 +84,14 @@ if (edituser) {
 
         token.setAttribute('value', user.csrf);
 
-        $('#name-' + user.id).html(user.name);
-        $('#permission-' + user.id).html(+user.permission_level === 1 ? "Пользователь" : "Модератор");
+        if (user.error) {
+          $('#editUserError').html(user.error).css({ display: 'block' });
+        }
+        else {
+          $('#name-' + user.id).html(user.name);
+          $('#permission-' + user.id).html(+user.permission_level === 1 ? "Пользователь" : "Модератор");
+          $('#edit_user').modal('hide');
+        }
       });
   })
 }
@@ -97,7 +111,13 @@ if (deleteuser) {
     }).then(res => res.json())
       .then(body => {
         token.setAttribute('value', body.csrf);
-        $("#user-" + id).remove();
+        if (body.error) {
+          $('#editUserError').html(body.error).css({ display: 'block' });
+        }
+        else {
+          $("#user-" + id).remove();
+          $('#edit_user').modal('hide');
+        }
       });
   })
 }

@@ -9,7 +9,6 @@ const { mod } = require('../middleware/permisson');
 const router = Router();
 const Op = Sequelize.Op;
 
-/* GET */
 
 router.get('/', async (req, res) => {
 
@@ -158,6 +157,7 @@ router.get('/:subcatalog/:map/edit', mod, async (req, res) => {
             if (catalogs) {
                 res.render('edit_map', {
                     title: 'Редактирование карты',
+                    isEditMap: true,
                     map,
                     catalogs
                 })
@@ -207,8 +207,6 @@ router.get('/:subcatalog/:map', async (req, res) => {
         console.error(error);
     }
 })
-
-/* POST */
 
 router.post('/add', mod, сatalogValidators, async (req, res) => {
     try {
@@ -342,16 +340,81 @@ router.post('/remove', mod, async (req, res) => {
     }
 })
 
-
-/* всё что ниже не готово */
-
-router.post('/:subcatalog/edit', mod, async (req, res) => {
+router.post('/:subcatalog/edit', mapValidators, mod, async (req, res) => {
     try {
-        const { title, discription, publicity, url, id, parent_catalog } = req.body;
+        const { title, discription, publicity, url, id, parent_catalog, tile, projection } = req.body;
+
+        if (!Number.isInteger(+req.params.subcatalog)) {
+            return res.redirect('/catalog');
+        }
+
+        const catalogs = await Catalog.findAll({ attributes: ['id', 'title'], raw: true });
+
+        if (!catalogs) {
+            return res.redirect('/catalog');
+        }
+
+        const errors = validationResult(req);
+
+        const data = {
+            id,
+            title,
+            discription,
+            publicity,
+            url,
+            projection,
+            tile,
+            parent_catalog: req.params.subcatalog
+        }
+        if (!errors.isEmpty()) {
+            return res.status(422).render('edit_map', {
+                title: 'Редактирование карты',
+                error: errors.array()[0].msg,
+                isEditMap: true,
+                catalogs,
+                map: data
+            });
+        }
+
+        if (!Number.isInteger(+id)) {
+            return res.redirect('/catalog/' + req.params.subcatalog);
+        }
 
         const map = await Maps.findByPk(+id);
 
         if (map) {
+
+            switch (tile) {
+                case 'empty':
+                    break;
+                case 'topo': case 'sentinel': case 'relief_dark':
+                    if (projection !== '3576') {
+                        req.flash('error', 'Неверное значение проекции');
+                        return res.status(422).render('edit_map', {
+                            title: 'Редактирование карты',
+                            error: req.flash('error'),
+                            isEditMap: true,
+                            catalogs,
+                            map: data
+                        });
+                    }
+                    break;
+                case 'osm':
+                    if (projection !== '3857') {
+                        req.flash('error', 'Неверное значение проекции');
+                        return res.status(422).render('edit_map', {
+                            title: 'Редактирование карты',
+                            error: req.flash('error'),
+                            isEditMap: true,
+                            catalogs,
+                            map: data
+                        });
+                    }
+                    break;
+                default:
+                    break;
+            }
+
             if (req.file) {
                 fs.unlink('./' + map.img_url, (err) => {
                     if (err) throw err;
@@ -364,6 +427,8 @@ router.post('/:subcatalog/edit', mod, async (req, res) => {
             map.publicity = publicity;
             map.url = url;
             map.parent_catalog = parent_catalog;
+            map.tile = tile;
+            map.projection = projection;
 
             await map.save();
             res.status(200).redirect('/catalog/' + req.params.subcatalog);
@@ -379,6 +444,15 @@ router.post('/:subcatalog/edit', mod, async (req, res) => {
 
 router.post('/:subcatalog/remove', mod, async (req, res) => {
     try {
+
+        if (!Number.isInteger(+req.params.subcatalog)) {
+            return res.redirect('/catalog');
+        }
+
+        if (!Number.isInteger(+req.body.id)) {
+            return res.redirect('/catalog/' + req.params.subcatalog);
+        }
+
         const map = await Maps.findByPk(+req.body.id);
 
         if (map) {
@@ -399,15 +473,7 @@ router.post('/:subcatalog/remove', mod, async (req, res) => {
 
 router.post('/:subcatalog/add', mapValidators, mod, async (req, res) => {
     try {
-
-        console.log(req.body);
-
-
-
         const { title, discription, publicity, url, projection, tile } = req.body;
-
-        console.log(req.body);
-
 
         if (!Number.isInteger(+req.params.subcatalog)) {
             return res.redirect('/catalog');

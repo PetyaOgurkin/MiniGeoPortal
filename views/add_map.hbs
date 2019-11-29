@@ -8,19 +8,19 @@
     <div class="form-group">
         <label for="title">Название карты</label>
         <textarea class="form-control" id="title" name="title" placeholder="Введите название карты" rows="4"
-            required>{{data.title}}</textarea>
+            minlength="3" maxlength="255" required>{{data.title}}</textarea>
     </div>
 
     <div class="form-group">
         <label for="discription">Описание</label>
         <textarea class="form-control" id="discription" name="discription" placeholder="Введите описание" rows="4"
-            required>{{data.discription}}</textarea>
+            minlength="3" maxlength="1000" required>{{data.discription}}</textarea>
     </div>
 
     <div class="form-group">
         <label for="url">WMS URL карты</label>
-        <input type="text" class="form-control" id="url" name="url" placeholder="Введите WMS адрес карты"
-            value="{{data.url}}" required>
+        <input type="text" class="form-control" id="url" name="url" placeholder="Введите WMS адрес карты" minlength="7"
+            maxlength="255" value="{{data.url}}" required>
     </div>
 
     <div class="form-group">
@@ -47,7 +47,7 @@
     <div class="form-group">
         <label for="img">Изображение</label>
         <input type="file" class="form-control-file" id="img" name="img" placeholder="Добавьте изображение для превью"
-            required>
+            accept=".png, .jpg, .jpeg" required>
     </div>
 
     <div class="form-group">

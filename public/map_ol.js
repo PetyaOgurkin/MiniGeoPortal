@@ -39,13 +39,22 @@ async function init() {
     return layers;
 }
 
-
+let tiled = [];
+let projection, extent;
 
 switch (PROJECTION_CODE) {
     case 'EPSG:3857':
-
+        projection = ol.proj.get(PROJECTION_CODE);
+        if (TILE !== 'empty') {
+            tiled = [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                })
+            ]
+        }
         break;
     case 'EPSG:4326':
+        projection = ol.proj.get(PROJECTION_CODE);
 
         break;
     case 'EPSG:3576':
@@ -53,29 +62,22 @@ switch (PROJECTION_CODE) {
         proj4.defs("EPSG:3576", "+proj=laea +lat_0=90 +lon_0=0 +x_0=90 +y_0=0 +datum=WGS84 +units=m +no_defs");
         ol.proj.proj4.register(proj4);
 
-        const extent = [-4859377.085, -7109342.085, 5159377.085, 2909412.085]
-
-        const projection = new ol.proj.Projection({
+        extent = [-4859377.085, -7109342.085, 5159377.085, 2909412.085]
+        projection = new ol.proj.Projection({
             code: PROJECTION_CODE,
             extent,
             global: false,
             units: 'm'
         });
 
-        const startResolution = 19567.87923828125;
-        const resolutions = [];
-        for (let i = 0; i < 13; i++) {
-            resolutions.push(startResolution / Math.pow(2, i));
-        }
+        let lvls;
 
-        let tiled = [];
         if (TILE !== 'empty') {
 
             let tiled_url;
-            let lvls;
             switch (TILE) {
                 case 'topo':
-                    tiled_url = 'http://monitor.krasn.ru/tiles/topo/{z}/{x}/{-y}.jpeg';
+                    tiled_url = 'http://monitor.krasn.ru/tiles/topo/{z}/{x}/{-y}.png';
                     lvls = 17;
                     break;
                 case 'sentinel':
@@ -90,10 +92,19 @@ switch (PROJECTION_CODE) {
                     console.log('err');
                     break;
             }
+
+
+            const startResolution = 19567.87923828125;
+            const resolutions = [];
+            for (let i = 0; i < lvls; i++) {
+                resolutions.push(startResolution / Math.pow(2, i));
+            }
+            console.log(resolutions);
+
             tiled = [
                 new ol.layer.Tile({
                     source: new ol.source.XYZ({
-                        url: 'http://monitor.krasn.ru/tiles/relief_dark/{z}/{x}/{-y}.jpeg',
+                        url: tiled_url,
                         projection,
                         tileGrid: new ol.tilegrid.TileGrid({
                             extent,
@@ -103,61 +114,12 @@ switch (PROJECTION_CODE) {
                     })
                 })
             ]
-
         }
-
-        const map = new ol.Map({
-            layers: [
-
-            ],
-            target: 'map',
-            view: new ol.View({
-                center: [0, 0],
-                zoom: 3,
-                projection,
-                extent
-            }),
-        });
-
         break;
 }
 
-
-proj4.defs("EPSG:3576", "+proj=laea +lat_0=90 +lon_0=0 +x_0=90 +y_0=0 +datum=WGS84 +units=m +no_defs");
-ol.proj.proj4.register(proj4);
-
-const extent = [-4859377.085, -7109342.085, 5159377.085, 2909412.085]
-
-const projection = new ol.proj.Projection({
-    code: 'EPSG:3576',
-    extent,
-    global: false,
-    units: 'm'
-});
-
-/* [-43e5, -48e5, 578e4, 528e4] */
-
-const startResolution = 19567.87923828125;
-const resolutions = [];
-for (let i = 0; i < 13; i++) {
-    resolutions.push(startResolution / Math.pow(2, i));
-}
-
-
 const map = new ol.Map({
-    layers: [
-        new ol.layer.Tile({
-            source: new ol.source.XYZ({
-                url: 'http://monitor.krasn.ru/tiles/relief_dark/{z}/{x}/{-y}.jpeg',
-                projection,
-                tileGrid: new ol.tilegrid.TileGrid({
-                    extent,
-                    resolutions,
-                    origin: ol.extent.getTopLeft(extent)
-                })
-            })
-        })
-    ],
+    layers: tiled,
     target: 'map',
     view: new ol.View({
         center: [0, 0],
@@ -165,24 +127,8 @@ const map = new ol.Map({
         projection,
         extent
     }),
-});
-
-
-
-/* const map = new ol.Map({
-    layers: [
-        new ol.layer.Tile({
-            source: new ol.source.OSM()
-        })
-    ],
-    target: 'map',
-    view: new ol.View({
-        projection,
-        center: ol.proj.fromLonLat([110, 70]),
-        zoom: 3
-    }),
     controls: ol.control.defaults().extend([new ol.control.ScaleLine()])
-}); */
+});
 
 
 document.querySelector('#close_info').addEventListener('click', () => {
@@ -261,7 +207,7 @@ init().then((layers) => {
 
             if (layer.getUrls().indexOf(WMS_URL) != -1) {
 
-                const url = layer.getFeatureInfoUrl(evt.coordinate, map.getView().getResolution(), 'EPSG:3576',
+                const url = layer.getFeatureInfoUrl(evt.coordinate, map.getView().getResolution(), PROJECTION_CODE,
                     {
                         'INFO_FORMAT': 'text/xml'
                     });
@@ -309,5 +255,4 @@ init().then((layers) => {
             }
         });
     });
-
 })

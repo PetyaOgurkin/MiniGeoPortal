@@ -89,7 +89,7 @@ if (edituser) {
         }
         else {
           $('#name-' + user.id).html(user.name);
-          $('#permission-' + user.id).html(+user.permission_level === 1 ? "Пользователь" : "Модератор");
+          $('#permission-' + user.id).html(+user.permission_level === 1 ? "Пользователь" : "Редактор");
           $('#edit_user').modal('hide');
         }
       });
@@ -133,7 +133,7 @@ if (usersTable) {
 
         $('#userId').val(id);
         $('#edit_login').val($('#name-' + id).html());
-        const perm_lvl = $('#permission-' + id).html() === "Модератор" ? 2 : 1;
+        const perm_lvl = $('#permission-' + id).html() === "Редактор" ? 2 : 1;
         $('#edit_permission').val(perm_lvl);
       }
     }

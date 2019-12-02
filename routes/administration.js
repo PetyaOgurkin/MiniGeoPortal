@@ -19,7 +19,7 @@ router.get('/', admin, async (req, res) => {
                 user.permission_level = "Пользователь";
             }
             else if (user.permission_level === 2) {
-                user.permission_level = "Модератор";
+                user.permission_level = "Редактор";
             }
         });
 
@@ -51,7 +51,7 @@ router.post('/adduser', admin, addUserValidators, async (req, res) => {
         }).then(task => {
             const responce = {
                 name,
-                permission_level: permission_level === "1" ? "Пользователь" : permission_level === "2" ? "Модератор" : null,
+                permission_level: permission_level === "1" ? "Пользователь" : permission_level === "2" ? "Редактор" : null,
                 id: task.dataValues.id,
                 csrf: req.csrfToken()
             }

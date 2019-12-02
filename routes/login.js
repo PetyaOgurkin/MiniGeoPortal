@@ -10,7 +10,7 @@ router.get('/', guest, (req, res) => {
     res.render('login', {
         title: 'Авторизация',
         isLogin: true,
-        loginError: req.flash('loginError')
+        error: req.flash('error')
     })
 })
 
@@ -40,12 +40,12 @@ router.post('/', guest, async (req, res) => {
                 });
             }
             else {
-                req.flash('loginError', 'Неверный пароль');
+                req.flash('error', 'Неверный пароль');
                 res.redirect('/login');
             }
         }
         else {
-            req.flash('loginError', 'Такого пользователя не существует');
+            req.flash('error', 'Такого пользователя не существует');
             res.redirect('/login');
         }
     } catch (error) {

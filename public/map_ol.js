@@ -21,7 +21,7 @@ const layersGroup = layers => {
                 params: {
                     'LAYERS': layer,
                     'TILED': true,
-                    'CRS': PROJECTION
+                    'CRS': PROJECTION_CODE
                 },
                 transition: 0,
                 projection
@@ -33,6 +33,7 @@ const layersGroup = layers => {
 async function init() {
 
     const layers = await getLayers();
+
     map.addLayer(new ol.layer.Group({
         layers: layersGroup(layers.layersName)
     }))
@@ -40,22 +41,26 @@ async function init() {
 }
 
 let tiled = [];
-let projection, extent;
+let projection, extent, center, zoom;
 
 switch (PROJECTION_CODE) {
     case 'EPSG:3857':
         projection = ol.proj.get(PROJECTION_CODE);
+        center = [1e7, 1e7];
+        zoom = 4;
         if (TILE !== 'empty') {
             tiled = [
                 new ol.layer.Tile({
                     source: new ol.source.OSM()
                 })
             ]
+
         }
         break;
     case 'EPSG:4326':
         projection = ol.proj.get(PROJECTION_CODE);
-
+        center = [92, 56];
+        zoom = 4;
         break;
     case 'EPSG:3576':
 
@@ -69,6 +74,8 @@ switch (PROJECTION_CODE) {
             global: false,
             units: 'm'
         });
+        center = [0, -24e5];
+        zoom = 2;
 
         let lvls;
 
@@ -99,7 +106,6 @@ switch (PROJECTION_CODE) {
             for (let i = 0; i < lvls; i++) {
                 resolutions.push(startResolution / Math.pow(2, i));
             }
-            console.log(resolutions);
 
             tiled = [
                 new ol.layer.Tile({
@@ -122,8 +128,8 @@ const map = new ol.Map({
     layers: tiled,
     target: 'map',
     view: new ol.View({
-        center: [0, 0],
-        zoom: 3,
+        center,
+        zoom,
         projection,
         extent
     }),

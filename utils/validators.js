@@ -2,8 +2,9 @@ const { body } = require('express-validator');
 const User = require('../models/users');
 
 exports.сatalogValidators = [
-    body('title', 'Минимальная длина названия 3 символа, максимальная 255 символов').isLength({ min: 3, max: 256 }).trim(),
-    body('discription', 'Минимальная длина описания 3 символа, максимальная 1000 символов').isLength({ min: 3 }).trim(),
+    body('title', 'Минимальная длина названия 3 символа, максимальная 255 символов').isLength({ min: 3, max: 255 }).trim(),
+    body('full_discription', 'Минимальная длина полного описания 3 символа, максимальная 3000 символов').isLength({ min: 3, max: 3000 }).trim(),
+    body('short_discription', 'Минимальная длина краткого описания 3 символа, максимальная 255 символов').isLength({ min: 3, max: 255 }).trim(),
     body('publicity').custom((value) => {
         if (['1', '2', '3'].indexOf(value) === -1) {
             throw new Error('Неверное значение уровня доступа');

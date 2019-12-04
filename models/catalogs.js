@@ -16,7 +16,14 @@ const catalog = db.define('Catalog', {
         type: Sequelize.INTEGER,
         allowNull: false
     },
-    discription: Sequelize.TEXT,
+    full_discription: {
+        type: Sequelize.TEXT,
+        allowNull: false
+    },
+    short_discription: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
     img_url: {
         type: Sequelize.STRING,
         allowNull: false

@@ -38,7 +38,8 @@ router.get('/', async (req, res) => {
 router.get('/add', mod, (req, res) => {
     res.render('add_catalog', {
         title: 'Добавить каталог',
-        error: req.flash('error')
+        error: req.flash('error'),
+        isEditCatalog: true,
     })
 })
 
@@ -100,6 +101,7 @@ router.get('/:subcatalog/edit', mod, async (req, res) => {
             if (catalog) {
                 res.render('edit_catalog', {
                     title: 'Редактирование каталога',
+                    isEditCatalog: true,
                     catalog
                 })
             }
@@ -210,16 +212,18 @@ router.get('/:subcatalog/:map', async (req, res) => {
 
 router.post('/add', mod, сatalogValidators, async (req, res) => {
     try {
-        const { title, discription, publicity } = req.body;
+        const { title, short_discription, full_discription, publicity } = req.body;
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(422).render('add_catalog', {
                 title: 'Добавить каталог',
+                isEditCatalog: true,
                 error: errors.array()[0].msg,
                 data: {
                     title: req.body.title,
-                    discription: req.body.discription,
+                    short_discription: req.body.short_discription,
+                    full_discription: req.body.full_discription,
                     publicity: req.body.publicity
                 }
             });
@@ -228,7 +232,8 @@ router.post('/add', mod, сatalogValidators, async (req, res) => {
         if (req.file) {
             await Catalog.create({
                 title,
-                discription,
+                short_discription,
+                full_discription,
                 publicity,
                 img_url: req.file.path
             });
@@ -240,9 +245,11 @@ router.post('/add', mod, сatalogValidators, async (req, res) => {
             return res.status(422).render('add_catalog', {
                 title: 'Добавить каталог',
                 error: req.flash('error'),
+                isEditCatalog: true,
                 data: {
                     title: req.body.title,
-                    discription: req.body.discription,
+                    short_discription: req.body.short_discription,
+                    full_discription: req.body.full_discription,
                     publicity: req.body.publicity
                 }
             });
@@ -255,7 +262,7 @@ router.post('/add', mod, сatalogValidators, async (req, res) => {
 
 router.post('/edit', mod, сatalogValidators, async (req, res) => {
     try {
-        const { title, discription, publicity, id } = req.body;
+        const { title, short_discription, full_discription, publicity, id } = req.body;
 
         if (!Number.isInteger(+id)) {
             return res.redirect('/catalog');
@@ -270,9 +277,11 @@ router.post('/edit', mod, сatalogValidators, async (req, res) => {
                 return res.status(422).render('edit_catalog', {
                     title: 'Редактирование каталога',
                     error: errors.array()[0].msg,
+                    isEditCatalog: true,
                     catalog: {
                         title,
-                        discription,
+                        short_discription,
+                        full_discription,
                         publicity,
                         id: catalog.id
                     }
@@ -289,7 +298,8 @@ router.post('/edit', mod, сatalogValidators, async (req, res) => {
             }
 
             catalog.title = title;
-            catalog.discription = discription;
+            catalog.short_discription = short_discription;
+            catalog.full_discription = full_discription;
             catalog.publicity = publicity;
 
             await catalog.save();

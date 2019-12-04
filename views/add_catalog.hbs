@@ -4,17 +4,25 @@
 <p class="alert">{{error}}</p>
 {{/if}}
 
-<form action="/catalog/add" method="POST" enctype="multipart/form-data">
+<form action="/catalog/add" method="POST" enctype="multipart/form-data" id="form_add" novalidate>
     <div class="form-group">
         <label for="title">Название каталога</label>
         <textarea class="form-control" id="title" name="title" placeholder="Введите название каталога" rows="4"
-            minlength="3" maxlength="255">{{data.title}}</textarea>
+            minlength="3" maxlength="255" required>{{data.title}}</textarea>
     </div>
 
     <div class="form-group">
-        <label for="discription">Описание</label>
-        <textarea class="form-control" id="discription" name="discription" placeholder="Введите описание" rows="4"
-            minlength="3" maxlength="1000" required>{{data.discription}}</textarea>
+        <label for="short_discription">Краткое описание</label>
+        <textarea class="form-control" id="short_discription" name="short_discription"
+            placeholder="Введите краткое описание" rows="4" minlength="3" maxlength="255"
+            required>{{data.short_discription}}</textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="full_discription">Полное описание</label>
+        <textarea class="form-control" id="full_discription" name="full_discription"
+            placeholder="Введите полное описание" rows="4" minlength="3" maxlength="3000"
+            required>{{data.full_discription}}</textarea>
     </div>
 
     <div class="form-group">

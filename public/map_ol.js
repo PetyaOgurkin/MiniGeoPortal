@@ -1,3 +1,5 @@
+$("#map_load_modal").modal('show');
+
 const WMS_URL = document.querySelector('#wms_url').value + "?";
 const TILE = document.querySelector('#tile').value;
 const PROJECTION_CODE = 'EPSG:' + document.querySelector('#projection').value;
@@ -14,19 +16,33 @@ async function getLayers() {
 }
 
 const layersGroup = layers => {
+
+    let count = 0;
     return layers.map(layer => {
-        return new ol.layer.Tile({
-            source: new ol.source.TileWMS({
+        const source = new ol.layer.Image({
+            source: new ol.source.ImageWMS({
                 url: WMS_URL,
                 params: {
                     'LAYERS': layer,
-                    'TILED': true,
                     'CRS': PROJECTION_CODE
                 },
-                transition: 0,
+                ratio: 1,
                 projection
             }),
+            type: 'WMS_LAYER'
         })
+
+        source.getSource().on('imageloadend', function () {
+            count++;
+            if (count === layers.length) {
+                setTimeout(() => {
+                    $("#map_load_modal").modal('hide');
+                }, 500)
+            }
+        });
+
+
+        return source
     })
 }
 
@@ -153,6 +169,7 @@ document.querySelector('#legendBtn').addEventListener('click', () => {
 })
 
 init().then((layers) => {
+
     const check = document.querySelector("#check");
     check.innerHTML = "";
     layers.layersName.forEach((layer, idx) => {
@@ -204,15 +221,16 @@ init().then((layers) => {
         })
     })
 
+
     map.on('singleclick', function (evt) {
         const info = document.getElementById('info');
         info.innerHTML = '';
 
         map.forEachLayerAtPixel(evt.pixel, function (feature) {
-            const layer = feature.getSource();
 
-            if (layer.getUrls().indexOf(WMS_URL) != -1) {
+            if (feature.get('type') === 'WMS_LAYER') {
 
+                const layer = feature.getSource();
                 const url = layer.getFeatureInfoUrl(evt.coordinate, map.getView().getResolution(), PROJECTION_CODE,
                     {
                         'INFO_FORMAT': 'text/xml'

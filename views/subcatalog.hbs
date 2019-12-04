@@ -1,5 +1,10 @@
+<a href="/catalog">Список всех разделов каталога карт</a>
+
+<p style="margin: 0;">Раздел каталога:</p>
+
 <h1 class="title">{{catalog.title}}</h1>
 
+<p class="catalog__discription">{{catalog.full_discription}}</p>
 
 {{#ifEditLvl user_lvl}}
 <p class="add__link"><a href="/catalog/{{catalog.id}}/add">Добавить карту</a></p>
@@ -39,7 +44,7 @@
 {{/each}}
 
 
-<div class="modal fade" id="wms_modal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal" id="wms_modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-body">

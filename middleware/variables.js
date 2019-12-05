@@ -1,4 +1,10 @@
+const { PROXY_URL } = require('../keys/index');
+
+console.log(PROXY_URL);
+
+
 module.exports = function (req, res, next) {
+    res.locals.proxy = PROXY_URL;
     res.locals.isAuth = req.session.isAuthenticated;
     res.locals.csrf = req.csrfToken();
     if (req.session.user) {

@@ -4,7 +4,7 @@
 <p class="alert">{{error}}</p>
 {{/if}}
 
-<form action="/login" method="POST" class="form-input form-login">
+<form action="{{proxy}}login" method="POST" class="form-input form-login">
     <div class="form-group">
         <label for="login">Логин</label>
         <input type="text" class="form-control" id="login" name="login" required>

@@ -4,7 +4,7 @@
 <p class="alert">{{error}}</p>
 {{/if}}
 
-<form action="/catalog/{{map.parent_catalog}}/edit" method="POST" enctype="multipart/form-data" id="edit">
+<form action="{{proxy}}catalog/{{map.parent_catalog}}/edit" method="POST" enctype="multipart/form-data" id="edit">
     <div class="form-group">
         <label for="title">Название карты</label>
         <textarea class="form-control" id="title" name="title" placeholder="Введите название карты" rows="4"
@@ -66,7 +66,7 @@
     </div>
 
     <div class="form-group">
-        <label for="parent_catalog">Каталог</label>
+        <label for="parent_catalog">Раздел каталога</label>
         <select class="form-control" id="parent_catalog" name="parent_catalog">
             {{#select map.parent_catalog}}
             {{#each catalogs}}
@@ -80,7 +80,7 @@
     <input type="hidden" name="id" value="{{map.id}}">
 </form>
 
-<form action="/catalog/{{map.parent_catalog}}/remove" method="POST" id="delete">
+<form action="{{proxy}}catalog/{{map.parent_catalog}}/remove" method="POST" id="delete">
     <input type="hidden" name="_csrf" value="{{csrf}}">
     <input type="hidden" name="id" value="{{map.id}}">
 </form>

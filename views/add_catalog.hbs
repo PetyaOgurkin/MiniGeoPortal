@@ -1,13 +1,13 @@
-<h1>Новый каталог</h1>
+<h1>Новый раздел каталога</h1>
 
 {{#if error}}
 <p class="alert">{{error}}</p>
 {{/if}}
 
-<form action="/catalog/add" method="POST" enctype="multipart/form-data" id="form_add" novalidate>
+<form action="{{proxy}}catalog/add" method="POST" enctype="multipart/form-data" id="form_add" novalidate>
     <div class="form-group">
-        <label for="title">Название каталога</label>
-        <textarea class="form-control" id="title" name="title" placeholder="Введите название каталога" rows="4"
+        <label for="title">Название раздела каталога</label>
+        <textarea class="form-control" id="title" name="title" placeholder="Введите название раздела каталога" rows="4"
             minlength="3" maxlength="255" required>{{data.title}}</textarea>
     </div>
 
@@ -32,7 +32,7 @@
     </div>
 
     <div class="form-group">
-        <label for="publicity">Видимость каталога</label>
+        <label for="publicity">Видимость раздела каталога</label>
         <select class="form-control" id="publicity" name="publicity">
             {{#select data.publicity}}
             <option value="3">Редакторы</option>
@@ -44,5 +44,5 @@
 
     <input type="hidden" name="_csrf" value="{{csrf}}">
 
-    <button type="submit" class="btn btn-primary">Создать каталог</button>
+    <button type="submit" class="btn btn-primary">Создать</button>
 </form>

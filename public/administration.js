@@ -19,7 +19,7 @@ $('#change_password').on('change', function () {
 })
 
 const token = document.querySelector('meta[name="_csrf"]');
-
+const proxy = '/client/';
 
 const adduser = document.querySelector('#addUserDB');
 if (adduser) {
@@ -32,7 +32,7 @@ if (adduser) {
     }
 
 
-    fetch('/administration/adduser', {
+    fetch(proxy + 'administration/adduser', {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ if (edituser) {
       id: $('#userId').val()
     }
 
-    fetch('/administration/edituser', {
+    fetch(proxy + 'administration/edituser', {
       method: 'put',
       headers: {
         'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ if (deleteuser) {
   deleteuser.addEventListener('click', () => {
     const id = $('#userId').val();
 
-    fetch('/administration/deleteuser', {
+    fetch(proxy + 'administration/deleteuser', {
       method: 'delete',
       headers: {
         'Content-Type': 'application/json',

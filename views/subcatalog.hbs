@@ -1,4 +1,4 @@
-<a href="/catalog">Список всех разделов каталога карт</a>
+<a href="{{proxy}}catalog">Список всех разделов каталога карт</a>
 
 <p style="margin: 0;">Раздел каталога:</p>
 
@@ -7,7 +7,7 @@
 <p class="catalog__discription">{{catalog.full_discription}}</p>
 
 {{#ifEditLvl user_lvl}}
-<p class="add__link"><a href="/catalog/{{catalog.id}}/add">Добавить карту</a></p>
+<p class="add__link"><a href="{{proxy}}catalog/{{catalog.id}}/add">Добавить карту</a></p>
 {{/ifEditLvl}}
 
 
@@ -17,7 +17,7 @@
 <div class="card mb-3">
     <div class="row no-gutters">
         <div class="col-md-4" style="max-height: 350px;">
-            <a href="/catalog/{{@root.catalog.id}}/{{id}}"><img src="../{{img_url}}" class="card-img"></a>
+            <a href="{{@root.proxy}}catalog/{{@root.catalog.id}}/{{id}}"><img src="../{{img_url}}" class="card-img"></a>
         </div>
         <div class="col-md-8">
             <div class="card-body">
@@ -28,11 +28,11 @@
                         data-toggle="modal" data-target="#wms_modal" data-id="{{url}}">WMS</button>
 
                     <a style="margin-right: 2rem;" class="btn btn-link btn-sm"
-                        href="/catalog/{{@root.catalog.id}}/{{id}}">Открыть</a>
+                        href="{{@root.proxy}}catalog/{{@root.catalog.id}}/{{id}}">Открыть</a>
 
                     {{#ifEditLvl @root.user_lvl}}
                     <a class="btn btn-link btn-sm"
-                        href="/catalog/{{@root.catalog.id}}/{{id}}/edit?allow=true">Редактировать</a>
+                        href="{{@root.proxy}}catalog/{{@root.catalog.id}}/{{id}}/edit?allow=true">Редактировать</a>
                     {{/ifEditLvl}}
 
                 </p>

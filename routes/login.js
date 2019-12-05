@@ -2,6 +2,7 @@ const { Router } = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('../models/users');
 const { guest, client } = require('../middleware/permisson');
+const { PROXY_URL } = require('../keys/index');
 
 const router = Router();
 
@@ -16,7 +17,7 @@ router.get('/', guest, (req, res) => {
 
 router.get('/logout', client, async (req, res) => {
     req.session.destroy(() => {
-        res.redirect('/');
+        res.redirect(PROXY_URL + '');
     });
 })
 
@@ -36,17 +37,17 @@ router.post('/', guest, async (req, res) => {
                     if (err) {
                         throw err
                     }
-                    res.redirect('/');
+                    res.redirect(PROXY_URL + '');
                 });
             }
             else {
                 req.flash('error', 'Неверный пароль');
-                res.redirect('/login');
+                res.redirect(PROXY_URL + 'login');
             }
         }
         else {
             req.flash('error', 'Такого пользователя не существует');
-            res.redirect('/login');
+            res.redirect(PROXY_URL + 'login');
         }
     } catch (error) {
         console.error(error);

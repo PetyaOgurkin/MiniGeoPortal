@@ -6,8 +6,10 @@ const Catalog = require('../models/catalogs');
 const Maps = require('../models/map');
 const { сatalogValidators, mapValidators } = require('../utils/validators');
 const { mod } = require('../middleware/permisson');
+const { PROXY_URL } = require('../keys/index');
 const router = Router();
 const Op = Sequelize.Op;
+
 
 
 router.get('/', async (req, res) => {
@@ -47,7 +49,7 @@ router.get('/:subcatalog', async (req, res) => {
 
     try {
         if (!Number.isInteger(+req.params.subcatalog)) {
-            return res.redirect('/catalog')
+            return res.redirect(PROXY_URL + 'catalog')
         }
 
         const catalog = await Catalog.findByPk(req.params.subcatalog, { raw: true });
@@ -55,17 +57,17 @@ router.get('/:subcatalog', async (req, res) => {
             if (req.session.isAuthenticated) {
                 const user_lvl = +req.session.user.permission_level + 1;
                 if (catalog.publicity > user_lvl) {
-                    return res.redirect('/catalog');
+                    return res.redirect(PROXY_URL + 'catalog');
                 }
             }
             else {
                 if (catalog.publicity > 1) {
-                    return res.redirect('/catalog');
+                    return res.redirect(PROXY_URL + 'catalog');
                 }
             }
         }
         else {
-            return res.redirect('/catalog');
+            return res.redirect(PROXY_URL + 'catalog');
         }
 
         let maps;
@@ -92,7 +94,7 @@ router.get('/:subcatalog', async (req, res) => {
 router.get('/:subcatalog/edit', mod, async (req, res) => {
 
     if (!req.query.allow) {
-        return res.redirect('/catalog/' + req.params.subcatalog);
+        return res.redirect(PROXY_URL + 'catalog/' + req.params.subcatalog);
     }
 
     try {
@@ -106,11 +108,11 @@ router.get('/:subcatalog/edit', mod, async (req, res) => {
                 })
             }
             else {
-                return res.redirect('/catalog');
+                return res.redirect(PROXY_URL + 'catalog');
             }
         }
         else {
-            return res.redirect('/catalog');
+            return res.redirect(PROXY_URL + 'catalog');
         }
 
     } catch (error) {
@@ -123,7 +125,7 @@ router.get('/:subcatalog/add', mod, async (req, res) => {
     try {
 
         if (!Number.isInteger(+req.params.subcatalog)) {
-            return res.redirect('/catalog');
+            return res.redirect(PROXY_URL + 'catalog');
         }
 
         const catalog = await Catalog.findByPk(req.params.subcatalog, { raw: true });
@@ -135,7 +137,7 @@ router.get('/:subcatalog/add', mod, async (req, res) => {
             })
         }
         else {
-            return res.redirect('/catalog');
+            return res.redirect(PROXY_URL + 'catalog');
         }
 
     } catch (error) {
@@ -145,11 +147,11 @@ router.get('/:subcatalog/add', mod, async (req, res) => {
 
 router.get('/:subcatalog/:map/edit', mod, async (req, res) => {
     if (!req.query.allow) {
-        return res.redirect('/catalog/' + req.params.subcatalog);
+        return res.redirect(PROXY_URL + 'catalog/' + req.params.subcatalog);
     }
     try {
         if (!Number.isInteger(+req.params.map)) {
-            return res.redirect('/catalog/' + req.params.subcatalog);
+            return res.redirect(PROXY_URL + 'catalog/' + req.params.subcatalog);
         }
 
         const map = await Maps.findByPk(+req.params.map, { raw: true });
@@ -166,7 +168,7 @@ router.get('/:subcatalog/:map/edit', mod, async (req, res) => {
             }
         }
         else {
-            res.redirect('/catalog/' + req.params.subcatalog);
+            res.redirect(PROXY_URL + 'catalog/' + req.params.subcatalog);
         }
 
     } catch (error) {
@@ -177,7 +179,7 @@ router.get('/:subcatalog/:map/edit', mod, async (req, res) => {
 router.get('/:subcatalog/:map', async (req, res) => {
     try {
         if (!Number.isInteger(+req.params.map)) {
-            return res.redirect('/catalog/' + req.params.subcatalog);
+            return res.redirect(PROXY_URL + 'catalog/' + req.params.subcatalog);
         }
 
         const map = await Maps.findByPk(+req.params.map, { raw: true });
@@ -185,12 +187,12 @@ router.get('/:subcatalog/:map', async (req, res) => {
             if (req.session.isAuthenticated) {
                 const user_lvl = +req.session.user.permission_level + 1;
                 if (map.publicity > user_lvl) {
-                    return res.redirect('/catalog/' + req.params.subcatalog);
+                    return res.redirect(PROXY_URL + 'catalog/' + req.params.subcatalog);
                 }
             }
             else {
                 if (map.publicity > 1) {
-                    return res.redirect('/catalog/' + req.params.subcatalog);
+                    return res.redirect(PROXY_URL + 'catalog/' + req.params.subcatalog);
                 }
             }
 
@@ -202,7 +204,7 @@ router.get('/:subcatalog/:map', async (req, res) => {
             })
         }
         else {
-            res.redirect('/catalog/' + req.params.subcatalog);
+            res.redirect(PROXY_URL + 'catalog/' + req.params.subcatalog);
         }
 
     } catch (error) {
@@ -238,7 +240,7 @@ router.post('/add', mod, сatalogValidators, async (req, res) => {
                 img_url: req.file.path
             });
 
-            res.status(201).redirect('/catalog');
+            res.status(201).redirect(PROXY_URL + 'catalog');
         }
         else {
             req.flash('error', 'Файл изображения должен быть формата соответсвующего формата.');
@@ -265,7 +267,7 @@ router.post('/edit', mod, сatalogValidators, async (req, res) => {
         const { title, short_discription, full_discription, publicity, id } = req.body;
 
         if (!Number.isInteger(+id)) {
-            return res.redirect('/catalog');
+            return res.redirect(PROXY_URL + 'catalog');
         }
 
         const catalog = await Catalog.findByPk(+id);
@@ -303,10 +305,10 @@ router.post('/edit', mod, сatalogValidators, async (req, res) => {
             catalog.publicity = publicity;
 
             await catalog.save();
-            res.status(200).redirect('/catalog');
+            res.status(200).redirect(PROXY_URL + 'catalog');
         }
         else {
-            res.redirect('/catalog');
+            res.redirect(PROXY_URL + 'catalog');
         }
 
     } catch (error) {
@@ -318,7 +320,7 @@ router.post('/edit', mod, сatalogValidators, async (req, res) => {
 router.post('/remove', mod, async (req, res) => {
     try {
         if (!Number.isInteger(+req.body.id)) {
-            return res.redirect('/catalog');
+            return res.redirect(PROXY_URL + 'catalog');
         }
 
         const catalog = await Catalog.findByPk(+req.body.id);
@@ -339,10 +341,10 @@ router.post('/remove', mod, async (req, res) => {
                     await map.destroy()
                 });
             }
-            res.status(204).redirect('/catalog');
+            res.status(204).redirect(PROXY_URL + 'catalog');
         }
         else {
-            res.redirect('/catalog');
+            res.redirect(PROXY_URL + 'catalog');
         }
 
     } catch (error) {
@@ -355,13 +357,13 @@ router.post('/:subcatalog/edit', mapValidators, mod, async (req, res) => {
         const { title, discription, publicity, url, id, parent_catalog, tile, projection } = req.body;
 
         if (!Number.isInteger(+req.params.subcatalog)) {
-            return res.redirect('/catalog');
+            return res.redirect(PROXY_URL + 'catalog');
         }
 
         const catalogs = await Catalog.findAll({ attributes: ['id', 'title'], raw: true });
 
         if (!catalogs) {
-            return res.redirect('/catalog');
+            return res.redirect(PROXY_URL + 'catalog');
         }
 
         const errors = validationResult(req);
@@ -387,7 +389,7 @@ router.post('/:subcatalog/edit', mapValidators, mod, async (req, res) => {
         }
 
         if (!Number.isInteger(+id)) {
-            return res.redirect('/catalog/' + req.params.subcatalog);
+            return res.redirect(PROXY_URL + 'catalog/' + req.params.subcatalog);
         }
 
         const map = await Maps.findByPk(+id);
@@ -441,10 +443,10 @@ router.post('/:subcatalog/edit', mapValidators, mod, async (req, res) => {
             map.projection = projection;
 
             await map.save();
-            res.status(200).redirect('/catalog/' + req.params.subcatalog);
+            res.status(200).redirect(PROXY_URL + 'catalog/' + req.params.subcatalog);
         }
         else {
-            res.redirect('/catalog/' + req.params.subcatalog);
+            res.redirect(PROXY_URL + 'catalog/' + req.params.subcatalog);
         }
 
     } catch (error) {
@@ -456,11 +458,11 @@ router.post('/:subcatalog/remove', mod, async (req, res) => {
     try {
 
         if (!Number.isInteger(+req.params.subcatalog)) {
-            return res.redirect('/catalog');
+            return res.redirect(PROXY_URL + 'catalog');
         }
 
         if (!Number.isInteger(+req.body.id)) {
-            return res.redirect('/catalog/' + req.params.subcatalog);
+            return res.redirect(PROXY_URL + 'catalog/' + req.params.subcatalog);
         }
 
         const map = await Maps.findByPk(+req.body.id);
@@ -470,10 +472,10 @@ router.post('/:subcatalog/remove', mod, async (req, res) => {
                 if (err) throw err;
             });
             await map.destroy();
-            res.status(204).redirect('/catalog/' + req.params.subcatalog);
+            res.status(204).redirect(PROXY_URL + 'catalog/' + req.params.subcatalog);
         }
         else {
-            res.redirect('/catalog/' + req.params.subcatalog);
+            res.redirect(PROXY_URL + 'catalog/' + req.params.subcatalog);
         }
 
     } catch (error) {
@@ -486,7 +488,7 @@ router.post('/:subcatalog/add', mapValidators, mod, async (req, res) => {
         const { title, discription, publicity, url, projection, tile } = req.body;
 
         if (!Number.isInteger(+req.params.subcatalog)) {
-            return res.redirect('/catalog');
+            return res.redirect(PROXY_URL + 'catalog');
         }
 
         const catalog = await Catalog.findByPk(req.params.subcatalog, { raw: true });
@@ -565,7 +567,7 @@ router.post('/:subcatalog/add', mapValidators, mod, async (req, res) => {
                 projection,
                 tile
             });
-            res.status(201).redirect('/catalog/' + req.params.subcatalog);
+            res.status(201).redirect(PROXY_URL + 'catalog/' + req.params.subcatalog);
         }
         else {
             req.flash('error', 'Файл изображения должен быть формата соответсвующего формата.');

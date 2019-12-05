@@ -13,21 +13,21 @@
 <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.1.1/build/ol.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.5.0/proj4-src.js"></script>
 
-<script src="/map_ol.js"></script>
+<script src="{{proxy}}map_ol.js"></script>
 {{/if}}
 
 {{#if isAdministration}}
-<script src="/administration.js"></script>
+<script src="{{proxy}}administration.js"></script>
 {{/if}}
 
 {{#if isCatalog}}
-<script src="/catalog.js"></script>
+<script src="{{proxy}}catalog.js"></script>
 {{/if}}
 
 {{#if isEditMap}}
-<script src="/editMap.js"></script>
+<script src="{{proxy}}editMap.js"></script>
 {{/if}}
 
 {{#if isEditCatalog}}
-<script type="module" src="/validation/catalog.js"></script>
+<script type="module" src="{{proxy}}validation/catalog.js"></script>
 {{/if}}

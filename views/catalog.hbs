@@ -2,7 +2,7 @@
 
 
 {{#ifEditLvl user_lvl}}
-<p class="add__link"><a href="/catalog/add">Добавить каталог</a></p>
+<p class="add__link"><a href="{{proxy}}catalog/add">Добавить раздел каталога</a></p>
 {{/ifEditLvl}}
 
 
@@ -11,7 +11,7 @@
     {{#each catalog}}
     <div class="col-lg-4 catalog-card">
         <div class="card">
-            <a href="/catalog/{{id}}"><img class="card-img-top" src="{{img_url}}" href="/catalog/{{id}}"></a>
+            <a href="{{@root.proxy}}catalog/{{id}}"><img class="card-img-top" src="{{img_url}}"></a>
             <div class="card-body catalog-card-body">
                 <h5 class="card-title"><b>{{title}}</b></h5>
                 <p class="card-text">{{short_discription}}</p>
@@ -19,10 +19,10 @@
             <div class="card-footer bg-transparent">
                 <p class="card-text">
 
-                    <a class="btn btn-link btn-sm" style="margin-right: 2rem;" href="/catalog/{{id}}">Открыть</a>
+                    <a class="btn btn-link btn-sm" style="margin-right: 2rem;" href="{{@root.proxy}}catalog/{{id}}">Открыть</a>
 
                     {{#ifEditLvl @root.user_lvl}}
-                    <a class="btn btn-link btn-sm" href="/catalog/{{id}}/edit?allow=true">Редактировать</a>
+                    <a class="btn btn-link btn-sm" href="{{@root.proxy}}catalog/{{id}}/edit?allow=true">Редактировать</a>
                     {{/ifEditLvl}}
 
                 </p>

@@ -15,11 +15,12 @@ const administartionRoutes = require('./routes/administration');
 const fileMiddleware = require('./middleware/file');
 const varMiddleaware = require('./middleware/variables');
 const errorHandler = require('./middleware/error');
+const { SESSION_SECRET } = require('./keys/index');
 
 const app = express();
 
 const hbs = exphbs.create({
-    defaultLayout: 'Main',
+    defaultLayout: 'main',
     extname: 'hbs',
     helpers: require('./utils/hbs-helper')
 })
@@ -36,7 +37,7 @@ app.use('/icons', express.static(path.join(__dirname, 'icons')));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(expressSession({
-    secret: 'secret string',
+    secret: SESSION_SECRET,
     store: sequelizeSessionStore,
     resave: false,
     saveUninitialized: false,

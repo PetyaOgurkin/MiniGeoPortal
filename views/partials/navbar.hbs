@@ -4,7 +4,7 @@
         {{map.title}}
     </div>
     {{else}}
-    <a class="navbar-brand" href="/">
+    <a class="navbar-brand" href="{{proxy}}">
         ГИС ЕНИСЕЙСКАЯ АРКТИКА
     </a>
     {{/if}}
@@ -16,15 +16,15 @@
         <ul class="navbar-nav ml-auto">
 
             {{#if isHome}}
-            <li class="nav-item active"><a class="nav-link" href="/">Главная</a></li>
+            <li class="nav-item active"><a class="nav-link" href="{{proxy}}">Главная</a></li>
             {{else}}
-            <li class="nav-item"><a class="nav-link" href="/">Главная</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{proxy}}">Главная</a></li>
             {{/if}}
 
             {{#if isCatalog}}
-            <li class="nav-item active"><a class="nav-link" href="/catalog">Каталог</a></li>
+            <li class="nav-item active"><a class="nav-link" href="{{proxy}}catalog">Каталог</a></li>
             {{else}}
-            <li class="nav-item"><a class="nav-link" href="/catalog">Каталог</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{proxy}}catalog">Каталог</a></li>
             {{/if}}
 
             {{#if isAuth}}
@@ -37,9 +37,9 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                     {{#ifAdmin user_lvl}}
-                    <a class="dropdown-item" href="/administration">Администрирование</a>
+                    <a class="dropdown-item" href="{{proxy}}administration">Администрирование</a>
                     {{/ifAdmin}}
-                    <a class="dropdown-item" href="/login/logout">Выйти</a>
+                    <a class="dropdown-item" href="{{proxy}}login/logout">Выйти</a>
                 </div>
             </li>
             {{else}}
@@ -50,9 +50,9 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                     {{#ifAdmin user_lvl}}
-                    <a class="dropdown-item" href="/administration">Администрирование</a>
+                    <a class="dropdown-item" href="{{proxy}}administration">Администрирование</a>
                     {{/ifAdmin}}
-                    <a class="dropdown-item" href="/login/logout">Выйти</a>
+                    <a class="dropdown-item" href="{{proxy}}login/logout">Выйти</a>
                 </div>
             </li>
             {{/if}}
@@ -60,9 +60,9 @@
             {{else}}
 
             {{#if isLogin}}
-            <li class="nav-item active"><a class="nav-link" href="/login">Войти</a></li>
+            <li class="nav-item active"><a class="nav-link" href="{{proxy}}login">Войти</a></li>
             {{else}}
-            <li class="nav-item"><a class="nav-link" href="/login">Войти</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{proxy}}login">Войти</a></li>
             {{/if}}
 
             {{/if}}

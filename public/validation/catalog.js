@@ -12,27 +12,33 @@ form.addEventListener('submit', e => {
     const errors = [];
 
     if (!title.checkValidity()) {
-        errors.push(textAreaValidate(title.value, 3, 255, 'Название каталога'));
+        errors.push(textAreaValidate(title.value, +title.getAttribute('minlength'), +title.getAttribute('maxlength'), 'Название каталога'));
     }
 
     if (!short_discription.checkValidity()) {
-        errors.push(textAreaValidate(short_discription.value, 3, 255, 'Краткое описание'));
+        errors.push(textAreaValidate(short_discription.value, +short_discription.getAttribute('minlength'), +short_discription.getAttribute('maxlength'), 'Краткое описание'));
     }
 
     if (!full_discription.checkValidity()) {
-        errors.push(textAreaValidate(full_discription.value, 3, 3000, 'Полное описание'));
+        errors.push(textAreaValidate(full_discription.value, +full_discription.getAttribute('minlength'), +full_discription.getAttribute('maxlength'), 'Полное описание'));
     }
 
     errors.push(...fileValidate(img.files[0]));
 
     if (errors.length > 0) {
 
+        errors.forEach((e, i) => {
+            if (i > 0) {
+                errors[i] = e[0].toLowerCase() + e.slice(1);
+            }
+        });
+
         const alert = document.querySelector('.alert');
         if (!alert) {
-            $('#form_add').before(`<p class="alert">${errors.join(', ')}</p>`);
+            $('#form_add').before(`<p class="alert">${errors.join(', ')}.</p>`);
         }
         else {
-            alert.innerHTML = errors.join(', ');
+            alert.innerHTML = errors.join(', ') + '.';
         }
 
         e.preventDefault();

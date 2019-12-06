@@ -4,7 +4,7 @@
 <p class="alert">{{error}}</p>
 {{/if}}
 
-<form action="{{proxy}}catalog/{{catalog.id}}/add" method="POST" enctype="multipart/form-data">
+<form action="{{proxy}}catalog/{{catalog.id}}/add" method="POST" enctype="multipart/form-data" id="form_add" novalidate>
     <div class="form-group">
         <label for="title">Название карты</label>
         <textarea class="form-control" id="title" name="title" placeholder="Введите название карты" rows="4"
@@ -14,12 +14,12 @@
     <div class="form-group">
         <label for="discription">Описание</label>
         <textarea class="form-control" id="discription" name="discription" placeholder="Введите описание" rows="4"
-            minlength="3" maxlength="1000" required>{{data.discription}}</textarea>
+            minlength="3" maxlength="3000" required>{{data.discription}}</textarea>
     </div>
 
     <div class="form-group">
         <label for="url">WMS URL карты</label>
-        <input type="text" class="form-control" id="url" name="url" placeholder="Введите WMS адрес карты" minlength="7"
+        <input type="text" class="form-control" id="url" name="url" placeholder="Введите WMS адрес карты"
             maxlength="255" value="{{data.url}}" required>
     </div>
 

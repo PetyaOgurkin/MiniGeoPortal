@@ -4,7 +4,7 @@
 <p class="alert">{{error}}</p>
 {{/if}}
 
-<form action="{{proxy}}catalog/edit" method="POST" enctype="multipart/form-data" id="edit">
+<form action="{{proxy}}catalog/edit" method="POST" enctype="multipart/form-data" id="form_add" novalidate>
     <div class="form-group">
         <label for="title">Название раздела каталога</label>
         <textarea class="form-control" id="title" name="title" placeholder="Введите название раздела каталога" rows="4"
@@ -48,7 +48,7 @@
 </form>
 
 <div class="submit-btns">
-    <button type="submit" form="edit" class="btn btn-primary">Готово</button>
+    <button type="submit" form="form_add" class="btn btn-primary">Готово</button>
     <button data-toggle="modal" data-target="#confirm_delete" class="btn btn-danger">Удалить раздел</button>
 </div>
 

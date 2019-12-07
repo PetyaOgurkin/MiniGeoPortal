@@ -77,7 +77,7 @@ router.put('/edituser', admin, editUserValidators, async (req, res) => {
         const { password, permission_level, id } = req.body;
 
         if (password !== null) {
-            if (!(password.match(/^[a-z0-9]+$/i) && password.length >= 3 && password.length <= 255)) {
+            if (!(password.match(/[^а-яА-ЯёЁ]{3,20}/i))) {
                 return res.status(422).json({
                     error: 'Некорректный пароль',
                     csrf: req.csrfToken()

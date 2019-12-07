@@ -25,14 +25,14 @@ function loginValidate(value, pattern) {
     const len = pattern.split('{').pop().slice(0, -1).split(',');
 
     if (value.length < +len[0]) {
-        return `Минимальная длинна имени ${+len[0]} символ${declension(+len[0])}`
+        return `Минимальная длинна логина ${+len[0]} символ${declension(+len[0])}`
     }
 
     if (value.length > +len[1]) {
-        return `Максимальная длинна имени ${+len[1]} символ${declension(+len[1])}`
+        return `Максимальная длинна логина ${+len[1]} символ${declension(+len[1])}`
     }
 
-    return 'Имя должно состоять только из латинских букв и цифр'
+    return 'Логин должн состоять только из латинских букв и цифр'
 }
 
 function passwordValidate(value, pattern) {

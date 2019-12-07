@@ -4,7 +4,8 @@
 <p class="alert">{{error}}</p>
 {{/if}}
 
-<form action="{{proxy}}catalog/edit" method="POST" enctype="multipart/form-data" id="form_add" novalidate>
+<form action="{{proxy}}catalog/edit" method="POST" enctype="multipart/form-data" id="form_add" data-action="edit"
+    novalidate>
     <div class="form-group">
         <label for="title">Название раздела каталога</label>
         <textarea class="form-control" id="title" name="title" placeholder="Введите название раздела каталога" rows="4"
@@ -28,7 +29,7 @@
     <div class="form-group">
         <label for="img">Изображение</label>
         <input type="file" class="form-control-file" id="img" name="img" accept=".png, .jpg, .jpeg"
-            placeholder="Добавьте изображение для превью">
+            placeholder="Добавьте изображение для превью" required>
     </div>
 
     <div class="form-group">

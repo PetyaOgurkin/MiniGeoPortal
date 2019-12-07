@@ -19,45 +19,72 @@ $('#change_password').on('change', function () {
 })
 
 const token = document.querySelector('meta[name="_csrf"]');
-const proxy = '/client/';
+const proxy = '/';
+
+import { loginValidate, passwordValidate } from './validation/model.js';
 
 const adduser = document.querySelector('#addUserDB');
 if (adduser) {
   adduser.addEventListener('click', () => {
 
-    const data = {
-      name: $('#login').val(),
-      password: $('#password').val(),
-      permission_level: $('#permission').val()
+    const errors = [];
+
+    const login = document.querySelector('#login');
+    const password = document.querySelector('#password');
+
+    if (!login.checkValidity()) {
+      errors.push(loginValidate(login.value, login.pattern));
     }
 
+    if (!password.checkValidity()) {
+      errors.push(passwordValidate(password.value, password.pattern));
+    }
 
-    fetch(proxy + 'administration/adduser', {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-        'XSRF-TOKEN': token.getAttribute('value')
-      },
-      body: JSON.stringify(data)
-    }).then(res => res.json())
-      .then(user => {
-        token.setAttribute('value', user.csrf);
-
-        if (user.error) {
-          $('#addUserError').html(user.error).css({ display: 'block' });
+    if (errors.length > 0) {
+      errors.forEach((e, i) => {
+        if (i > 0) {
+          errors[i] = e[0].toLowerCase() + e.slice(1);
         }
-        else {
-          const html = `
-          <tr id="user-${user.id}">
-            <td id="name-${user.id}">${user.name.toLowerCase()}</td>
-            <td id="permission-${user.id}">${user.permission_level}</td>
-            <td><button class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#edit_user" id="edit-${user.id}">Редактировать</button></td>
-         </tr>`
+      });
 
-          $('#addUserTR').before(html);
-          $('#add_user').modal('hide');
-        }
-      })
+      const alert = document.querySelector('#addUserError');
+      alert.innerHTML = errors.join(', ') + '.';
+      alert.style.cssText = '';
+    }
+    else {
+      const data = {
+        name: $('#login').val(),
+        password: $('#password').val(),
+        permission_level: $('#permission').val()
+      }
+
+      fetch(proxy + 'administration/adduser', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          'XSRF-TOKEN': token.getAttribute('value')
+        },
+        body: JSON.stringify(data)
+      }).then(res => res.json())
+        .then(user => {
+          token.setAttribute('value', user.csrf);
+
+          if (user.error) {
+            $('#addUserError').html(user.error).css({ display: 'block' });
+          }
+          else {
+            const html = `
+            <tr id="user-${user.id}">
+              <td id="name-${user.id}">${user.name.toLowerCase()}</td>
+              <td id="permission-${user.id}">${user.permission_level}</td>
+              <td><button class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#edit_user" id="edit-${user.id}">Редактировать</button></td>
+           </tr>`
+
+            $('#addUserTR').before(html);
+            $('#add_user').modal('hide');
+          }
+        })
+    }
   })
 }
 
@@ -65,34 +92,61 @@ const edituser = document.querySelector('#editUserDB');
 if (edituser) {
   edituser.addEventListener('click', () => {
 
-    const data = {
-      name: $('#edit_login').val(),
-      password: $('#change_password').prop('checked') === true ? $('#edit_password').val() : null,
-      permission_level: $('#edit_permission').val(),
-      id: $('#userId').val()
+    let validity = true;
+
+    if ($('#change_password').prop('checked')) {
+      const errors = [];
+      const password = document.querySelector('#edit_password');
+      if (!password.checkValidity()) {
+        errors.push(passwordValidate(password.value, password.pattern));
+      }
+      if (errors.length > 0) {
+        errors.forEach((e, i) => {
+          if (i > 0) {
+            errors[i] = e[0].toLowerCase() + e.slice(1);
+          }
+        });
+
+        const alert = document.querySelector('#editUserError');
+        alert.innerHTML = errors.join(', ') + '.';
+        alert.style.cssText = '';
+        validity = false;
+      }
+      else {
+        $('#editUserError').html('').css({ display: 'none' });
+      }
     }
 
-    fetch(proxy + 'administration/edituser', {
-      method: 'put',
-      headers: {
-        'Content-Type': 'application/json',
-        'XSRF-TOKEN': token.getAttribute('value')
-      },
-      body: JSON.stringify(data)
-    }).then(res => res.json())
-      .then(user => {
+    if (validity) {
+      const data = {
+        name: $('#edit_login').val(),
+        password: $('#change_password').prop('checked') === true ? $('#edit_password').val() : null,
+        permission_level: $('#edit_permission').val(),
+        id: $('#userId').val()
+      }
 
-        token.setAttribute('value', user.csrf);
+      fetch(proxy + 'administration/edituser', {
+        method: 'put',
+        headers: {
+          'Content-Type': 'application/json',
+          'XSRF-TOKEN': token.getAttribute('value')
+        },
+        body: JSON.stringify(data)
+      }).then(res => res.json())
+        .then(user => {
 
-        if (user.error) {
-          $('#editUserError').html(user.error).css({ display: 'block' });
-        }
-        else {
-          $('#name-' + user.id).html(user.name);
-          $('#permission-' + user.id).html(+user.permission_level === 1 ? "Пользователь" : "Редактор");
-          $('#edit_user').modal('hide');
-        }
-      });
+          token.setAttribute('value', user.csrf);
+
+          if (user.error) {
+            $('#editUserError').html(user.error).css({ display: 'block' });
+          }
+          else {
+            $('#name-' + user.id).html(user.name);
+            $('#permission-' + user.id).html(+user.permission_level === 1 ? "Пользователь" : "Редактор");
+            $('#edit_user').modal('hide');
+          }
+        });
+    }
   })
 }
 

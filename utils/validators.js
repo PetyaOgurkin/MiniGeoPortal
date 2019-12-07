@@ -14,8 +14,8 @@ exports.сatalogValidators = [
 ]
 
 exports.mapValidators = [
-    body('title', 'Минимальная длина названия 3 символа, максимальная 255 символов').isLength({ min: 3 }).trim(),
-    body('discription', 'Минимальная длина описания 3 символа, максимальная 1000 символов').isLength({ min: 3 }).trim(),
+    body('title', 'Минимальная длина названия 3 символа, максимальная 255 символов').isLength({ min: 3, max: 255 }).trim(),
+    body('discription', 'Минимальная длина описания 3 символа, максимальная 3000 символов').isLength({ min: 3, max: 3000 }).trim(),
     body('url', 'Неверное значение WMS URL').isURL().trim(),
     body('tile').custom((value) => {
         if (['empty', 'topo', 'sentinel', 'relief_dark', 'osm'].indexOf(value) === -1) {
@@ -38,14 +38,19 @@ exports.mapValidators = [
 ]
 
 exports.addUserValidators = [
-    body('name', 'Некорректное имя пользователя').isLength({ min: 3, max: 255 }).isAlphanumeric().trim().custom(async value => {
+    body('name', 'Некорректное имя пользователя').isLength({ min: 3, max: 20 }).isAlphanumeric().trim().custom(async value => {
         const user = await User.findOne({ where: { name: value.toLowerCase() }, raw: true });
         if (user) {
             throw new Error('Пользователь с таким именем уже существует');
         }
         return true;
     }),
-    body('password', 'Некорректный пароль').isLength({ min: 3, max: 255 }).isAlphanumeric().trim(),
+    body('password', 'Некорректный пароль').isLength({ min: 3, max: 20 }).custom(value => {
+        if (!(value.match(/[^а-яА-ЯёЁ]{3,20}/i))) {
+            throw new Error('Некорректный пароль');
+        }
+        return true;
+    }).trim(),
     body('permission_level').custom((value) => {
         if (['1', '2', '3'].indexOf(value) === -1) {
             throw new Error('Неверное значение прав пользователя');

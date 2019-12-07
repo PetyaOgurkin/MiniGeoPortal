@@ -12,7 +12,6 @@ if (parent_catalog) {
         if (option.innerHTML.length > 70) {
             option.innerHTML = option.innerHTML.slice(0, 70) + '...'
         }
-
     })
 }
 

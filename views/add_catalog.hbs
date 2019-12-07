@@ -4,7 +4,8 @@
 <p class="alert">{{error}}</p>
 {{/if}}
 
-<form action="{{proxy}}catalog/add" method="POST" enctype="multipart/form-data" id="form_add" novalidate>
+<form action="{{proxy}}catalog/add" method="POST" enctype="multipart/form-data" id="form_add" data-action="add"
+    novalidate>
     <div class="form-group">
         <label for="title">Название раздела каталога</label>
         <textarea class="form-control" id="title" name="title" placeholder="Введите название раздела каталога" rows="4"

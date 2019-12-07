@@ -4,7 +4,8 @@
 <p class="alert">{{error}}</p>
 {{/if}}
 
-<form action="{{proxy}}catalog/{{map.parent_catalog}}/edit" method="POST" enctype="multipart/form-data" id="form_add" novalidate>
+<form action="{{proxy}}catalog/{{map.parent_catalog}}/edit" method="POST" enctype="multipart/form-data" id="form_add"
+    data-action="edit" novalidate>
     <div class="form-group">
         <label for="title">Название карты</label>
         <textarea class="form-control" id="title" name="title" placeholder="Введите название карты" rows="4"
@@ -19,8 +20,8 @@
 
     <div class="form-group">
         <label for="url">WMS URL карты</label>
-        <input type="text" class="form-control" id="url" name="url" placeholder="Введите WMS адрес карты"
-            maxlength="255" value="{{map.url}}" required>
+        <input type="url" class="form-control" id="url" name="url" placeholder="Введите WMS адрес карты" maxlength="255"
+            value="{{map.url}}" required>
     </div>
 
     <div class="form-group">
@@ -51,7 +52,7 @@
     <div class="form-group">
         <label for="img">Изображение</label>
         <input type="file" class="form-control-file" id="img" name="img" accept=".png, .jpg, .jpeg"
-            placeholder="Добавьте изображение для превью">
+            placeholder="Добавьте изображение для превью" required>
     </div>
 
     <div class="form-group">

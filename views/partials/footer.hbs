@@ -17,7 +17,7 @@
 {{/if}}
 
 {{#if isAdministration}}
-<script src="{{proxy}}administration.js"></script>
+<script type="module" src="{{proxy}}administration.js"></script>
 {{/if}}
 
 {{#if isCatalog}}
@@ -26,9 +26,9 @@
 
 {{#if isEditMap}}
 <script src="{{proxy}}editMap.js"></script>
-<script type="module" src="{{proxy}}validation/map.js"></script>
+<script type="module" src="{{proxy}}validation/form.js"></script>
 {{/if}}
 
 {{#if isEditCatalog}}
-<script type="module" src="{{proxy}}validation/catalog.js"></script>
+<script type="module" src="{{proxy}}validation/form.js"></script>
 {{/if}}

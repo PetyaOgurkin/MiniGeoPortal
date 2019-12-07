@@ -1,8 +1,8 @@
 module.exports = {
-    PROXY_URL: '/client/',
-    DB_NAME: 'client_db',
-    USER_NAME: 'client',
-    DB_PASSWORD: 'client',
-    DB_URL: '172.16.132.45',
+    PROXY_URL: '/',
+    DB_NAME: 'client',
+    USER_NAME: 'postgres',
+    DB_PASSWORD: '12345',
+    DB_URL: 'localhost',
     SESSION_SECRET: 'secret string'
 }

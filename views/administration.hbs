@@ -51,12 +51,12 @@
 
                 <div class="form-group">
                     <label for="login">Логин</label>
-                    <input type="text" class="form-control" id="login">
+                    <input type="text" class="form-control" id="login" pattern="[a-zA-Z0-9]{3,20}" required>
                 </div>
 
                 <div class="form-group">
                     <label for="password">Пароль</label>
-                    <input type="password" class="form-control" id="password">
+                    <input type="password" class="form-control" id="password" pattern="[^а-яА-ЯёЁ]{3,20}" required>
                 </div>
 
                 <div class="form-group">
@@ -97,7 +97,8 @@
 
                 <div class="form-group form-changepass">
                     <label for="edit_password">Пароль</label>
-                    <input type="password" class="form-control" id="edit_password" disabled>
+                    <input type="password" class="form-control" id="edit_password" pattern="[^а-яА-ЯёЁ]{3,20}" required
+                        disabled>
                 </div>
 
                 <div class="form-check">

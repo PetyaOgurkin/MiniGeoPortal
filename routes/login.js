@@ -1,10 +1,21 @@
 const { Router } = require('express');
 const bcrypt = require('bcryptjs');
+const rateLimit = require("express-rate-limit");
 const User = require('../models/users');
 const { guest, client } = require('../middleware/permisson');
 const { PROXY_URL } = require('../keys/index');
 
 const router = Router();
+
+const loginLimiter = rateLimit({
+    windowMs: 5 * 60 * 1000,
+    max: 5,
+    handler: function (req, res, next) {
+        req.flash('error', "Слишком много попыток входа, попробуйте позже.");
+        res.redirect(PROXY_URL + 'login');
+    }
+});
+
 
 router.get('/', guest, (req, res) => {
 
@@ -21,7 +32,7 @@ router.get('/logout', client, async (req, res) => {
     });
 })
 
-router.post('/', guest, async (req, res) => {
+router.post('/', guest, loginLimiter, async (req, res) => {
 
     try {
         const { login, password } = req.body;
